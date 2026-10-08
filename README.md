@@ -1,13 +1,11 @@
-# Tribuna mobile demo - UI44
+# Трибуна — демо приложения UI45
 
-Public preview: https://nikita22025-oss.github.io/tribuna-app-demo/
+https://nikita22025-oss.github.io/tribuna-app-demo/
 
-Exported from React Native / Expo with a public data snapshot. Source dates and stale-data states stay visible. This demo is not a live match feed; forecasts are not published.
+Отдельное публичное демо приложения. Статический снимок ленты от 6 октября 2026; это не live-расписание. Каталог приложения содержит отдельные проверки официальных условий от 6 и 8 октября; дата указана у каждой карточки. Максимальные суммы и публичная проверка не гарантируют персональную доступность.
 
-UI44 contains independent feed-cache recovery, strict match dates, font notices, large-text layout fixes and reserved space for the favourite marker. The ui44-web1 export additionally fits all five navigation labels at 320px; native typography remains unchanged.
+UI45 уточняет шесть карточек: Балтбет, PARI, Мелбет, Бетсити, Фонбет и BetBoom. Справка Фонбета остаётся частично подтверждённой, конфликт периода BetBoom сохранён. Исторические результаты прогнозной модели не представлены как готовые прогнозы.
 
-Test Android ARM64 APK (version 0.1.1, code 6): https://github.com/nikita22025-oss/tribuna-app-demo/releases/download/ui44/tribuna-ui44-android-arm64.apk
+Android: версия0.1.1/code7, тестовая подпись. Это не публикация в Google Play/App Store. РостFPS не подтверждён; нативная iOS-сборка пока не выполнена.
 
-APK SHA-256: `9351e443c83c8fa9515c4c40e4c469b30ced895508fb4db623f30947287d158a`.
-
-APK and browser exports retain distinct verification scopes. APK is test-signed, not a store release, and has not been installed on the owner's physical device. Updating the demo does not update an installed application. Earlier hashed assets and the UI37 release remain available.
+Предыдущая версия UI44: e586b060e78eb8591f76d989d702de6c7b5e7c45. Старые ресурсы и APK остаются доступными для отката.
