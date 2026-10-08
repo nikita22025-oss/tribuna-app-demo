@@ -1,0 +1,15 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="140" height="140" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Stadium / behind badge" clip-path="url(#clip0_0_13)">
+<path id="Vector" d="M70 139C108.108 139 139 108.108 139 70C139 31.8924 108.108 1 70 1C31.8924 1 1 31.8924 1 70C1 108.108 31.8924 139 70 139Z" fill="#203F33" stroke="#60783E"/>
+<path id="Vector_2" d="M70 127C101.48 127 127 101.48 127 70C127 38.5198 101.48 13 70 13C38.5198 13 13 38.5198 13 70C13 101.48 38.5198 127 70 127Z" stroke="#E6FF57" stroke-opacity="0.38"/>
+<path id="Vector_3" d="M70 118C96.5097 118 118 96.5097 118 70C118 43.4903 96.5097 22 70 22C43.4903 22 22 43.4903 22 70C22 96.5097 43.4903 118 70 118Z" stroke="#E6FF57" stroke-opacity="0.2"/>
+<path id="Vector_4" d="M92 32H48C46.8954 32 46 32.8954 46 34V106C46 107.105 46.8954 108 48 108H92C93.1046 108 94 107.105 94 106V34C94 32.8954 93.1046 32 92 32Z" stroke="#E6FF57" stroke-width="1.5"/>
+<path id="Vector_5" d="M46 70H94M59 32V44H81V32M59 108V96H81V108" stroke="#E6FF57" stroke-width="1.5"/>
+<path id="Vector_6" d="M70 80C75.5228 80 80 75.5228 80 70C80 64.4772 75.5228 60 70 60C64.4772 60 60 64.4772 60 70C60 75.5228 64.4772 80 70 80Z" stroke="#E6FF57" stroke-width="1.5"/>
+</g>
+<defs>
+<clipPath id="clip0_0_13">
+<rect width="140" height="140" fill="white"/>
+</clipPath>
+</defs>
+</svg>
