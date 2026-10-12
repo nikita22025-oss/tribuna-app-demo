@@ -31,24 +31,25 @@ h1 { margin: 0; font: 900 clamp(40px, 13vw, 64px)/1 Golos; letter-spacing: -.04e
 .dock::before { content: ""; position: absolute; left: -12px; right: -12px; top: -22px; bottom: -60px; pointer-events: none;
   background: linear-gradient(to bottom, rgba(242,243,238,0), var(--paper) 22px); }
 .capsule { position: relative; pointer-events: auto; width: 100%; max-width: 696px; height: 64px; display: flex; border-radius: 26px; overflow: hidden;
-  background: rgba(27,29,25,.96); padding: 6px 0; box-shadow: 0 8px 18px rgba(0,0,0,.22); }
+  background: rgba(27,29,25,.96); padding: 6px 10px; box-shadow: 0 8px 18px rgba(0,0,0,.22); }
 .capsule svg.wave { position: absolute; left: 0; top: 0; pointer-events: none; }
-.cell { flex: 1; min-width: 0; border: 0; background: none; padding: 6px 0 0; display: flex; flex-direction: column; align-items: center; gap: 3px;
+.cell { flex: 1; min-width: 0; border: 0; background: none; padding: 5px 0 0; display: flex; flex-direction: column; align-items: center; gap: 2px;
   cursor: pointer; color: rgba(242,243,238,.72); -webkit-tap-highlight-color: transparent; touch-action: manipulation; position: relative; }
-.cell:focus-visible { outline: 2px solid var(--acid); outline-offset: -4px; border-radius: 18px; }
+.cell:focus { outline: none; }
+.kbd .cell:focus-visible .lab { outline: 1.5px solid rgba(242,243,238,.9); outline-offset: 3px; border-radius: 5px; }
 .cell[aria-selected="true"] { color: var(--acid); }
 .ico { width: 26px; height: 26px; background: currentColor; -webkit-mask: var(--src) center / var(--w) var(--h) no-repeat; mask: var(--src) center / var(--w) var(--h) no-repeat;
   transition: transform .26s cubic-bezier(.3,1.6,.5,1); }
 .cell[aria-selected="true"] .ico { transform: translateY(-1px) scale(1.06); }
 .cell:active .ico { transform: scale(.94); transition-duration: .09s; }
 .lab { font: 700 10px/13px Golos; white-space: nowrap; }
-@media (max-width: 340px) { .lab { font-size: 9px; } }
+@media (max-width: 340px) { .lab { font-size: 8.5px; } }
 @media (prefers-reduced-motion: reduce) { .ico { transition: none; transform: none !important; } }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="brand"><span class="logo">ТРИБУНА</span><span class="note">Браузерное демо нижней панели приложения</span></div>
+  <div class="brand"><span class="logo">ТРИБУНА</span><span class="note">Браузерное демо нижней панели · версия 2</span></div>
   <p class="kicker">Раздел</p>
   <h1 id="title">Журнал</h1>
   <p class="about" id="about"></p>
@@ -62,7 +63,7 @@ h1 { margin: 0; font: 900 clamp(40px, 13vw, 64px)/1 Golos; letter-spacing: -.04e
       <defs><linearGradient id="waveGlow" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0" stop-color="#E6FF57" stop-opacity=".2"/><stop offset="1" stop-color="#E6FF57" stop-opacity="0"/></linearGradient></defs>
       <path id="glow" fill="url(#waveGlow)"/>
-      <path id="wave" fill="none" stroke="#E6FF57" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+      <path id="wave" fill="none" stroke="#E6FF57" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
   </nav>
 </div>
@@ -78,13 +79,14 @@ h1 { margin: 0; font: 900 clamp(40px, 13vw, 64px)/1 Golos; letter-spacing: -.04e
     { id: 'predictions', label: 'Прогнозы', w: 21.8, h: 21.8, about: 'Раздел прогнозов; собственная модель готовится.' }
   ];
   // Same numbers as src/TribunaNavigation.tsx (UI72).
-  var WAVE = { base: 58.5, top: 4.5, half: 34, inset: 22 };
-  var LEAD = { damping: 20, stiffness: 320, mass: 0.7 }, TRAIL = { damping: 24, stiffness: 170, mass: 0.9 };
+  // half: arch half-width in tab widths; flank: share of the half taken by each sloping side.
+  var WAVE = { base: 61.5, top: 3.5, half: 0.66, flank: 0.62, pad: 10, maxHalf: 54 };
+  var SPRING = { damping: 22, stiffness: 240, mass: 0.8 };
   var capsule = document.getElementById('capsule'), svg = document.getElementById('svg');
   var wavePath = document.getElementById('wave'), glowPath = document.getElementById('glow');
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   var index = 0, width = 0, raf = 0, last = 0;
-  var L = { x: 0, v: 0, s: LEAD }, R = { x: 0, v: 0, s: LEAD };
+  var X = { x: 0, v: 0 };
   var cells = TABS.map(function (t, i) {
     var b = document.createElement('button');
     b.type = 'button'; b.className = 'cell'; b.setAttribute('role', 'tab'); b.id = 'tab-' + t.id;
@@ -103,49 +105,47 @@ h1 { margin: 0; font: 900 clamp(40px, 13vw, 64px)/1 Golos; letter-spacing: -.04e
     var n = (index + d + TABS.length) % TABS.length;
     select(n); cells[n].focus();
   });
+  // The focus mark is for keyboard users only: a tap or a click never draws it.
+  window.addEventListener('keydown', function (e) { if (e.key === 'Tab' || e.key.indexOf('Arrow') === 0) document.documentElement.classList.add('kbd'); });
+  window.addEventListener('pointerdown', function () { document.documentElement.classList.remove('kbd'); });
 
+  // The arch is one rigid shape as wide as a tab: it encloses the icon and the label with a margin,
+  // stays symmetric about the tab centre (also on the edge tabs) and slides without changing form.
   function draw() {
-    var cell = width / TABS.length;
-    var from = Math.min(L.x, R.x), to = Math.max(L.x, R.x);
-    var stretch = (to - from) * cell;
-    var half = Math.min(WAVE.half, cell / 2 - 2) + stretch / 2;
-    var cx = ((from + to) / 2) * cell + cell / 2;
-    var top = WAVE.top + Math.min(14, stretch * 0.18);
-    var a = Math.max(WAVE.inset, cx - half), b = Math.min(width - WAVE.inset, cx + half), k = (b - a) / 2;
+    var cell = (width - WAVE.pad * 2) / TABS.length;
+    var half = Math.min(cell * WAVE.half, WAVE.maxHalf), flank = half * WAVE.flank, plateau = half - flank;
+    var cx = WAVE.pad + X.x * cell + cell / 2, a = cx - half, b = cx + half, base = WAVE.base, top = WAVE.top;
     var f = function (n) { return n.toFixed(2); };
-    var bell = 'C ' + f(a + k * 0.5) + ' ' + WAVE.base + ' ' + f(a + k * 0.42) + ' ' + f(top) + ' ' + f(a + k) + ' ' + f(top) +
-      ' C ' + f(b - k * 0.42) + ' ' + f(top) + ' ' + f(b - k * 0.5) + ' ' + WAVE.base + ' ' + f(b) + ' ' + WAVE.base;
-    wavePath.setAttribute('d', 'M ' + WAVE.inset + ' ' + WAVE.base + ' L ' + f(a) + ' ' + WAVE.base + ' ' + bell + ' L ' + f(width - WAVE.inset) + ' ' + WAVE.base);
-    glowPath.setAttribute('d', 'M ' + f(a) + ' ' + WAVE.base + ' ' + bell + ' Z');
-  }
-  function step(o, dt) {
-    var acc = (-o.s.stiffness * (o.x - index) - o.s.damping * o.v) / o.s.mass;
-    o.v += acc * dt; o.x += o.v * dt;
-    return Math.abs(o.x - index) > 0.0005 || Math.abs(o.v) > 0.005;
+    var arch = 'C ' + f(a + flank * 0.5) + ' ' + base + ' ' + f(cx - plateau - flank * 0.5) + ' ' + top + ' ' + f(cx - plateau) + ' ' + top +
+      ' L ' + f(cx + plateau) + ' ' + top +
+      ' C ' + f(cx + plateau + flank * 0.5) + ' ' + top + ' ' + f(b - flank * 0.5) + ' ' + base + ' ' + f(b) + ' ' + base;
+    wavePath.setAttribute('d', 'M -8 ' + base + ' L ' + f(a) + ' ' + base + ' ' + arch + ' L ' + f(width + 8) + ' ' + base);
+    glowPath.setAttribute('d', 'M ' + f(a) + ' ' + base + ' ' + arch + ' Z');
   }
   function tick(now) {
     var dt = Math.max(0, Math.min(0.064, (now - last) / 1000)); last = now;
-    var moving = false;
-    for (var n = Math.max(1, Math.ceil(dt / 0.004)), i = 0; i < n; i++) { var a = step(L, dt / n), b = step(R, dt / n); moving = a || b; }
-    if (!moving) { L.x = R.x = index; L.v = R.v = 0; }
+    var moving = true;
+    for (var n = Math.max(1, Math.ceil(dt / 0.004)), i = 0; i < n; i++) {
+      var acc = (-SPRING.stiffness * (X.x - index) - SPRING.damping * X.v) / SPRING.mass;
+      X.v += acc * dt / n; X.x += X.v * dt / n;
+    }
+    if (Math.abs(X.x - index) < 0.0008 && Math.abs(X.v) < 0.008) { X.x = index; X.v = 0; moving = false; }
     draw();
     raf = moving ? requestAnimationFrame(tick) : 0;
   }
   function select(i) {
-    var goingRight = i > index;
-    if (i !== index) { L.s = goingRight ? TRAIL : LEAD; R.s = goingRight ? LEAD : TRAIL; }
     index = i;
     cells.forEach(function (c, n) { c.setAttribute('aria-selected', n === i ? 'true' : 'false'); c.tabIndex = n === i ? 0 : -1; });
     document.getElementById('title').textContent = TABS[i].label;
     document.getElementById('about').textContent = TABS[i].about;
-    if (reduce.matches) { L.x = R.x = i; L.v = R.v = 0; draw(); return; }
+    if (reduce.matches) { X.x = i; X.v = 0; draw(); return; }
     if (!raf) { last = performance.now(); raf = requestAnimationFrame(tick); }
   }
   function measure() { width = capsule.clientWidth; svg.setAttribute('width', width); draw(); }
   window.addEventListener('resize', measure);
-  if (reduce.addEventListener) reduce.addEventListener('change', function () { L.x = R.x = index; L.v = R.v = 0; draw(); });
+  if (reduce.addEventListener) reduce.addEventListener('change', function () { X.x = index; X.v = 0; draw(); });
   measure(); select(0);
-  window.__nav = { state: function () { return { index: index, left: L.x, right: R.x, moving: !!raf, d: wavePath.getAttribute('d') }; } };
+  window.__nav = { state: function () { return { index: index, x: X.x, moving: !!raf, d: wavePath.getAttribute('d') }; } };
 })();
 </script>
 </body>
