@@ -4,6 +4,8 @@
   var ALL = DATA.books.slice().sort(function (a, b) { return a.order - b.order; });
   var $ = function (id) { return document.getElementById(id); };
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  // One script, two looks: the page may set window.RATING_VARIANT before loading it.
+  var V = Object.assign({ step: 0.62, near: 1.08, far: 0.56, depth: 170, depthFar: 120, rot: 40, fade: 0.46, dim: 0.16, mono: false }, window.RATING_VARIANT || {});
 
   var FILTERS = [
     { id: 'all', label: 'Все', test: function () { return true; } },
@@ -71,6 +73,7 @@
     cards = state.list.map(function (b, i) {
       var c = el('article', 'card');
       c.style.setProperty('--tint', tint(b.color));
+      c.style.setProperty('--brand', /^#[0-9a-f]{6}$/i.test(b.color || '') ? b.color : '#1b1d19');
       c.setAttribute('aria-label', b.name + '. ' + (b.amount ? (b.prefix ? b.prefix + ' ' : '') + money(b.amount) + ', ' + b.label : kindLabel(b)));
       var row = el('div', 'row'); row.appendChild(plate(b));
       row.appendChild(el('span', 'num', String(b.order).padStart(2, '0') + ' / ' + String(ALL.length).padStart(2, '0')));
@@ -105,25 +108,27 @@
 
   function layout(drag) {
     var w = cards[0] ? cards[0].offsetWidth : 300;
-    var step = w * 0.62, pos = state.index - drag / step;
+    var step = w * V.step, pos = state.index - drag / step;
     cards.forEach(function (c, i) {
       var d = i - pos, a = Math.abs(d), s = d < 0 ? -1 : 1;
       if (a > 3.2) { c.style.visibility = 'hidden'; return; }
       c.style.visibility = '';
       var near = Math.min(a, 1);
-      var x = s * (near * step * 1.08 + Math.max(0, a - 1) * step * 0.56);
-      var z = -near * 170 - Math.max(0, a - 1) * 120;
-      var rot = reduce.matches ? 0 : -s * near * 40;
+      var x = s * (near * step * V.near + Math.max(0, a - 1) * step * V.far);
+      var z = -near * V.depth - Math.max(0, a - 1) * V.depthFar;
+      var rot = reduce.matches ? 0 : -s * near * V.rot;
       c.style.transform = 'translate3d(' + x.toFixed(1) + 'px,0,' + z.toFixed(1) + 'px) rotateY(' + rot.toFixed(1) + 'deg)';
-      c.style.opacity = String(Math.max(0, 1 - Math.max(0, a - 0.35) * 0.46));
+      c.style.opacity = String(Math.max(0, 1 - Math.max(0, a - 0.35) * V.fade));
       c.style.zIndex = String(100 - Math.round(a * 10));
-      c.style.filter = a > 0.5 ? 'brightness(' + (1 - Math.min(a, 2) * 0.16).toFixed(2) + ')' : '';
+      c.style.filter = V.mono ? 'grayscale(' + Math.min(1, a * 1.6).toFixed(2) + ') brightness(' + (1 - Math.min(a, 2) * V.dim).toFixed(2) + ')'
+        : a > 0.5 ? 'brightness(' + (1 - Math.min(a, 2) * V.dim).toFixed(2) + ')' : '';
       var cur = i === state.index;
       c.setAttribute('aria-current', cur ? 'true' : 'false');
       c.setAttribute('aria-hidden', cur ? 'false' : 'true');
       Array.prototype.forEach.call(c.querySelectorAll('button'), function (b) { b.tabIndex = cur ? 0 : -1; });
     });
     var b = state.list[state.index];
+    document.body.style.setProperty('--active', b && /^#[0-9a-f]{6}$/i.test(b.color || '') ? b.color : '#1b1d19');
     $('nowName').textContent = b ? b.name : '—';
     $('nowPos').textContent = b ? (state.index + 1) + ' ИЗ ' + state.list.length : '';
     $('prev').disabled = state.index <= 0;
@@ -159,7 +164,7 @@
     if (!active) return; active = false;
     stage.classList.remove('dragging');
     if (locked === 'x') {
-      var w = cards[0] ? cards[0].offsetWidth * 0.62 : 190;
+      var w = cards[0] ? cards[0].offsetWidth * V.step : 190;
       var n = Math.round(-dx / w);
       if (n === 0 && Math.abs(vel) > 0.45) n = vel < 0 ? 1 : -1;
       go(state.index + n);

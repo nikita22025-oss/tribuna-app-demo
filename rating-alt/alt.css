@@ -1,0 +1,35 @@
+/* Variant B: light stage, a fan of tall cards; only the front one is in colour. */
+:root { --muted: rgba(27,29,25,.62); --line: rgba(27,29,25,.14); --glass: rgba(255,255,255,.7); --card-w: min(70vw, 300px); }
+.card .head { -webkit-line-clamp: 2; }
+.card .sum:not(.word) { font-size: clamp(34px, 11vw, 50px); }
+body { background: var(--paper); color: var(--ink); transition: background-color .5s; background-color: color-mix(in srgb, var(--active, #1b1d19) 7%, #F2F3EE); }
+.glow { display: none; }
+.logo { background: var(--ink); color: var(--acid); }
+.age { color: var(--ink); }
+.kicker { color: #4D601E; }
+h1 em { color: #4D601E; }
+.search input::placeholder { color: var(--muted); }
+.search button { background: rgba(27,29,25,.1); }
+.chip[aria-selected="true"] { background: var(--ink); border-color: var(--ink); color: var(--acid); }
+.stage { perspective: 900px; }
+.card { color: var(--paper); border: 0; backdrop-filter: none; -webkit-backdrop-filter: none; border-radius: 22px;
+  background: linear-gradient(180deg, var(--brand) 0%, color-mix(in srgb, var(--brand) 34%, #11130F) 44%, #11130F 78%);
+  box-shadow: 0 34px 50px -30px rgba(27,29,25,.7); }
+.card::before { background: linear-gradient(180deg, rgba(255,255,255,.14), transparent 30%); opacity: 1; }
+.card[aria-current="true"] { border: 0; box-shadow: 0 44px 60px -30px rgba(27,29,25,.8); }
+.card .num { color: rgba(242,243,238,.8); }
+.card .tag, .card .head, .card .checked { color: rgba(242,243,238,.7); }
+.card .sum small { color: rgba(242,243,238,.7); }
+.card .btn { border-color: rgba(242,243,238,.2); color: var(--paper); }
+.card .btn.main { color: var(--ink); }
+.card .kind.none { color: rgba(242,243,238,.75); border-color: rgba(242,243,238,.25); }
+.card .btn.pick[aria-pressed="true"] { color: var(--ink); }
+.dock { background: transparent; border: 0; backdrop-filter: none; -webkit-backdrop-filter: none; color: var(--ink); }
+.dock button { background: var(--ink); color: var(--paper); border-radius: 50%; }
+#nowPos { color: #4D601E; }
+.dots { gap: 6px; }
+.dots i { width: 14px; height: 2px; border-radius: 1px; background: rgba(27,29,25,.18); }
+.dots i.on { width: 26px; background: var(--active, #1b1d19); }
+.fresh { border-color: rgba(150,100,20,.4); background: rgba(240,180,90,.2); color: #5B4310; }
+.compare { background: var(--ink); color: var(--paper); }
+.compare button { background: var(--acid); color: var(--ink); }
