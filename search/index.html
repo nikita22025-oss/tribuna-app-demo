@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#1B1D19">
+<title>Трибуна — панель поиска, демо</title>
+<style>
+@font-face { font-family: Golos; src: url(fonts/golos-regular.ttf); font-weight: 400; font-display: swap; }
+@font-face { font-family: Golos; src: url(fonts/golos-bold.ttf); font-weight: 700; font-display: swap; }
+@font-face { font-family: Golos; src: url(fonts/golos-black.ttf); font-weight: 900; font-display: swap; }
+:root { --ink: #1B1D19; --paper: #F2F3EE; --acid: #E6FF57; --muted: rgba(242,243,238,.6); --line: rgba(242,243,238,.14); }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--ink); color: var(--paper); font: 400 15px/1.45 Golos, system-ui, sans-serif; min-height: 100svh;
+  padding: calc(env(safe-area-inset-top) + 16px) 16px calc(env(safe-area-inset-bottom) + 28px); }
+.wrap { max-width: 520px; margin: 0 auto; }
+.brand { display: flex; align-items: center; justify-content: space-between; }
+.logo { background: var(--acid); color: var(--ink); font: 900 20px/1 Golos; letter-spacing: -.5px; padding: 9px 12px 8px; border-radius: 10px; }
+.age { font: 700 13px/1 Golos; color: var(--acid); border: 1px solid var(--line); border-radius: 999px; padding: 7px 10px; }
+h1 { margin: 22px 0 16px; font: 900 clamp(28px, 8.4vw, 40px)/1.04 Golos; letter-spacing: -.035em; }
+h1 span { color: var(--acid); }
+
+.stage { background: var(--acid); border-radius: 28px; height: 168px; display: grid; place-items: center; padding: 0 16px; }
+.bar { position: relative; width: 100%; max-width: 420px; height: 60px; perspective: 520px; }
+.field { position: absolute; inset: 0; border-radius: 30px; background: var(--paper); opacity: 0; visibility: hidden;
+  transform-origin: 50% 50%; will-change: transform, opacity; box-shadow: 0 14px 24px -14px rgba(27,29,25,.55); backface-visibility: visible; }
+.field input { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; outline: 0; background: none; border-radius: inherit;
+  padding: 0 68px 0 24px; font: 400 17px/1 Golos, system-ui, sans-serif; color: var(--ink); opacity: 0; -webkit-appearance: none; appearance: none; }
+.field input::placeholder { color: rgba(27,29,25,.5); }
+.field input::-webkit-search-cancel-button, .field input::-webkit-search-decoration { display: none; }
+.knob { position: absolute; top: 50%; left: 50%; width: 56px; height: 56px; margin: -28px 0 0 -28px; border-radius: 50%; border: 0; padding: 0;
+  background: var(--ink); color: var(--paper); cursor: pointer; will-change: transform; -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 8px 16px -8px rgba(27,29,25,.6); touch-action: manipulation; }
+.knob:focus-visible { outline: 3px solid var(--ink); outline-offset: 4px; }
+.knob svg { position: absolute; inset: 0; margin: auto; width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; pointer-events: none; }
+
+.out { margin-top: 18px; min-height: 240px; }
+.hint { color: var(--muted); margin: 0 0 10px; }
+.tips { display: flex; flex-wrap: wrap; gap: 8px; }
+.tip { min-height: 44px; padding: 0 16px; border-radius: 22px; border: 1px solid var(--line); background: none; color: var(--paper); font: 700 14px/1 Golos; cursor: pointer; }
+.tip:focus-visible { outline: 2px solid var(--acid); outline-offset: 3px; }
+.count { margin: 0 0 6px; font-size: 12px; color: var(--muted); }
+.list { list-style: none; margin: 0; padding: 0; }
+.list li { padding: 13px 0; border-bottom: 1px solid var(--line); }
+.kind { display: inline-block; font: 700 10px/1 Golos; letter-spacing: .12em; text-transform: uppercase; color: var(--acid); margin-right: 8px; }
+.when { font-size: 12px; color: var(--muted); }
+.title { margin: 5px 0 2px; font-weight: 700; font-size: 16px; line-height: 1.25; }
+.title mark { background: var(--acid); color: var(--ink); border-radius: 3px; padding: 0 1px; }
+.sub { margin: 0; font-size: 13px; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.none { padding: 26px 0; text-align: center; color: var(--muted); }
+.none b { display: block; color: var(--paper); font-size: 18px; margin-bottom: 4px; }
+.foot { margin-top: 26px; font-size: 12px; line-height: 1.5; color: var(--muted); }
+.foot p { margin: 0 0 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand"><span class="logo">ТРИБУНА</span><span class="age">18+</span></div>
+  <h1>Панель <span>поиска</span></h1>
+
+  <div class="stage">
+    <div class="bar" id="bar" role="search">
+      <div class="field" id="field">
+        <input id="q" type="search" placeholder="Матч, статья, букмекер" aria-label="Поиск по каталогу Трибуны"
+               autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" tabindex="-1">
+      </div>
+      <button class="knob" id="knob" type="button" aria-label="Открыть поиск" aria-expanded="false" aria-controls="field">
+        <svg id="lens" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.4 15.4 5 5"/></svg>
+        <svg id="cross" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="out" id="out" aria-live="polite"></div>
+
+  <footer class="foot">
+    <p id="meta"></p>
+    <p>Демонстрация панели. «Трибуна» не принимает ставки; регистрации здесь нет.</p>
+  </footer>
+</div>
+
+<script src="data.js"></script>
+<script>
+(function () {
+  'use strict';
+  var D = window.TRIBUNA_SEARCH, $ = function (id) { return document.getElementById(id); };
+  var bar = $('bar'), field = $('field'), input = $('q'), knob = $('knob'), lens = $('lens'), cross = $('cross'), out = $('out');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var INK = [27, 29, 25], PAPER = [242, 243, 238];
+  var OPEN_MS = 640, CLOSE_MS = 520;
+  var p = 0, target = 0, raf = 0, last = 0, openedAt = 0;
+
+  function clamp(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+  function mix(a, b, t) { return 'rgb(' + a.map(function (v, i) { return Math.round(v + (b[i] - v) * t); }).join(',') + ')'; }
+  function inOut(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+  function outBack(t) { var c = 1.9; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); }
+
+  // p: 0 = round lens button, 1 = open capsule.
+  // 0–.22 the button pales and a thin line appears (the capsule seen edge-on);
+  // .18–.80 the capsule flips open around its horizontal axis while the button travels right and becomes a cross;
+  // .80–1 the text appears.
+  function draw() {
+    var a = clamp(p / 0.22), b = clamp((p - 0.18) / 0.62), c = clamp((p - 0.8) / 0.2);
+    var flip = outBack(b), slide = inOut(b);
+    var w = bar.offsetWidth;
+    field.style.visibility = target || p > 0.001 ? 'visible' : 'hidden'; // hiding a focused field would drop the focus
+    field.style.opacity = String(clamp(p / 0.08));
+    field.style.transform = 'rotateX(' + (88 * (1 - flip)).toFixed(2) + 'deg) scaleX(' + (0.9 + 0.1 * slide).toFixed(3) + ')';
+    input.style.opacity = String(c);
+    var size = 56 - 8 * slide, x = (w / 2 - 6 - 24) * slide;
+    var light = a * (1 - clamp((b - 0.42) / 0.4));
+    knob.style.transform = 'translate3d(' + x.toFixed(1) + 'px,0,0) scale(' + (size / 56).toFixed(3) + ')';
+    knob.style.backgroundColor = mix(INK, PAPER, light);
+    knob.style.color = mix(PAPER, INK, light);
+    knob.style.boxShadow = light > 0.5 ? '0 0 0 1px rgba(27,29,25,.14), 0 6px 12px -6px rgba(27,29,25,.4)' : '';
+    lens.style.opacity = String(1 - clamp(p / 0.2));
+    cross.style.opacity = String(clamp((b - 0.5) / 0.4));
+    cross.style.transform = 'rotate(' + (-90 * (1 - slide)).toFixed(1) + 'deg)';
+  }
+  function tick(now) {
+    var dt = Math.max(0, Math.min(48, now - last)); last = now; // a frame stamp can precede the start time
+    var step = dt / (target ? OPEN_MS : CLOSE_MS);
+    p = target ? Math.min(1, p + step) : Math.max(0, p - step);
+    draw();
+    raf = p === target ? 0 : requestAnimationFrame(tick);
+  }
+  function run() {
+    if (reduce.matches) { p = target; draw(); return; }
+    if (!raf) { last = performance.now(); raf = requestAnimationFrame(tick); }
+  }
+
+  function open() {
+    if (target === 1) return;
+    target = 1; openedAt = performance.now();
+    knob.setAttribute('aria-expanded', 'true'); knob.setAttribute('aria-label', 'Закрыть поиск');
+    input.tabIndex = 0;
+    field.style.visibility = 'visible';
+    input.focus({ preventScroll: true }); // inside the tap, or iPhone will not raise the keyboard
+    run(); render();
+  }
+  function close(focusKnob) {
+    if (target === 0) return;
+    target = 0;
+    knob.setAttribute('aria-expanded', 'false'); knob.setAttribute('aria-label', 'Открыть поиск');
+    input.value = ''; input.tabIndex = -1; input.blur();
+    if (focusKnob) knob.focus({ preventScroll: true });
+    run(); render();
+  }
+  knob.addEventListener('click', function () { if (target) close(false); else open(); });
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { e.preventDefault(); close(true); }
+    else if (e.key === 'Enter') {
+      e.preventDefault(); render();
+      // The Enter that opened the panel from the button must not dismiss the field it has just focused.
+      if (performance.now() - openedAt > 250) input.blur();
+    }
+  });
+  input.addEventListener('input', render);
+  window.addEventListener('resize', draw);
+  if (reduce.addEventListener) reduce.addEventListener('change', function () { p = target; draw(); });
+
+  /* ---------- search over the public snapshot ---------- */
+  function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+  function norm(s) { return (s || '').toLowerCase().replace(/ё/g, 'е'); }
+  function date(s) { if (!s) return ''; var m = s.split('-'); return m[2] + '.' + m[1] + '.' + m[0]; }
+  function marked(text, q) {
+    var h = el('p', 'title'), at = norm(text).indexOf(q);
+    if (!q || at < 0) { h.textContent = text; return h; }
+    h.appendChild(document.createTextNode(text.slice(0, at)));
+    h.appendChild(el('mark', null, text.slice(at, at + q.length)));
+    h.appendChild(document.createTextNode(text.slice(at + q.length)));
+    return h;
+  }
+  var ITEMS = D.items.map(function (it) { return { it: it, t: norm(it.title), rest: norm(it.sub + ' ' + it.extra + ' ' + it.kind) }; });
+  var TIPS = ['Зенит', 'КХЛ', 'Теннис', 'Фонбет', 'Трибуна'];
+
+  function render() {
+    out.textContent = '';
+    if (!target) { out.appendChild(el('p', 'hint', 'Нажмите на лупу.')); return; }
+    var q = norm(input.value.trim());
+    if (!q) {
+      out.appendChild(el('p', 'hint', 'Попробуйте:'));
+      var tips = el('div', 'tips');
+      TIPS.forEach(function (t) {
+        var b = el('button', 'tip', t); b.type = 'button';
+        b.addEventListener('click', function () { input.value = t; input.focus({ preventScroll: true }); render(); });
+        tips.appendChild(b);
+      });
+      out.appendChild(tips); return;
+    }
+    var hits = ITEMS.filter(function (x) { return x.t.indexOf(q) >= 0; })
+      .concat(ITEMS.filter(function (x) { return x.t.indexOf(q) < 0 && x.rest.indexOf(q) >= 0; }));
+    if (!hits.length) {
+      var n = el('div', 'none'); n.appendChild(el('b', null, 'Ничего не найдено'));
+      n.appendChild(document.createTextNode('По запросу «' + input.value.trim() + '» в срезе каталога ничего нет.'));
+      out.appendChild(n); return;
+    }
+    out.appendChild(el('p', 'count', 'Найдено: ' + hits.length + (hits.length > 30 ? ', показаны первые 30' : '')));
+    var ul = el('ul', 'list');
+    hits.slice(0, 30).forEach(function (x) {
+      var it = x.it, li = el('li');
+      li.appendChild(el('span', 'kind', it.kind));
+      var when = it.kind === 'Букмекер' ? (it.date ? 'условия проверены ' + date(it.date) : 'условия не проверены')
+        : date(it.date) + (it.time ? ', ' + it.time : '');
+      li.appendChild(el('span', 'when', when));
+      li.appendChild(marked(it.title, q));
+      if (it.sub) li.appendChild(el('p', 'sub', it.sub));
+      ul.appendChild(li);
+    });
+    out.appendChild(ul);
+  }
+
+  $('meta').textContent = 'Поиск идёт по сохранённому срезу каталога от ' + date(D.meta.snapshotAt) + ' (' + D.meta.count +
+    ' записей: матчи, статьи, новости, букмекеры). Условия букмекеров — на ' + date(D.meta.booksCheckedAt) + '. Срез не обновляется.';
+  draw(); render();
+  window.__search = { state: function () { return { p: p, target: target }; } };
+})();
+</script>
+</body>
+</html>
