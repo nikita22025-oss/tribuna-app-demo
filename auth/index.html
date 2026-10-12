@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#11130F">
+<title>Трибуна — вход и регистрация, демо</title>
+<style>
+@font-face { font-family: Golos; src: url(fonts/golos-regular.ttf); font-weight: 400; font-display: swap; }
+@font-face { font-family: Golos; src: url(fonts/golos-bold.ttf); font-weight: 700; font-display: swap; }
+@font-face { font-family: Golos; src: url(fonts/golos-black.ttf); font-weight: 900; font-display: swap; }
+:root { --ink: #1B1D19; --paper: #F2F3EE; --acid: #E6FF57; --muted: rgba(242,243,238,.66); --line: rgba(242,243,238,.16);
+  --slide: .62s cubic-bezier(.66,0,.2,1); --greet: 42%; --gh: 172px; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; min-height: 100svh; color: var(--paper); font: 400 15px/1.45 Golos, system-ui, sans-serif; background: #11130F;
+  padding: calc(env(safe-area-inset-top) + 16px) 16px calc(env(safe-area-inset-bottom) + 24px); display: flex; flex-direction: column; align-items: center; overflow-x: hidden; }
+/* Faceted dark backdrop drawn with gradients: no image files. */
+.bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; background:
+  radial-gradient(60% 50% at 20% 12%, rgba(230,255,87,.13), transparent 70%),
+  radial-gradient(50% 42% at 88% 86%, rgba(230,255,87,.09), transparent 70%), #11130F; }
+.bg i { position: absolute; width: 70vmax; height: 26vmax; border-radius: 3vmax; transform-origin: 50% 50%;
+  background: linear-gradient(180deg, rgba(242,243,238,.085), rgba(242,243,238,.012) 55%, rgba(0,0,0,.35));
+  box-shadow: 0 3vmax 5vmax rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.07); }
+.bg i:nth-child(1) { left: -22vmax; top: -8vmax; transform: rotate(-24deg); }
+.bg i:nth-child(2) { right: -30vmax; top: 6vmax; transform: rotate(31deg); }
+.bg i:nth-child(3) { left: -12vmax; top: 36vmax; transform: rotate(18deg); }
+.bg i:nth-child(4) { right: -20vmax; top: 52vmax; transform: rotate(-36deg); }
+.bg i:nth-child(5) { left: 8vmax; top: 74vmax; transform: rotate(-12deg); }
+
+.top { position: relative; z-index: 1; width: 100%; max-width: 880px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.logo { background: var(--acid); color: var(--ink); font: 900 20px/1 Golos; letter-spacing: -.5px; padding: 9px 12px 8px; border-radius: 10px; }
+.demo { font: 700 11px/1.2 Golos; letter-spacing: .1em; text-transform: uppercase; color: var(--acid); border: 1px solid rgba(230,255,87,.4); border-radius: 999px; padding: 7px 10px; text-align: center; }
+
+.panel { position: relative; z-index: 1; width: 100%; max-width: 880px; height: 500px; margin: auto 0; border-radius: 28px; overflow: hidden;
+  background: linear-gradient(150deg, rgba(242,243,238,.10), rgba(242,243,238,.035));
+  border: 1px solid rgba(242,243,238,.18); box-shadow: 0 40px 80px -30px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,255,255,.2);
+  backdrop-filter: blur(22px) saturate(130%); -webkit-backdrop-filter: blur(22px) saturate(130%); }
+.zone { position: absolute; top: 0; bottom: 0; transition: transform var(--slide); will-change: transform; }
+/* register: greeting left, form right. login: they change sides. */
+.greet { left: 0; width: var(--greet); z-index: 2;
+  background: linear-gradient(160deg, rgba(242,243,238,.17), rgba(242,243,238,.05));
+  box-shadow: 0 0 60px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.22), inset 1px 0 0 rgba(255,255,255,.08), inset -1px 0 0 rgba(255,255,255,.08); }
+.greet::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,.10) 46%, transparent 58%); }
+.forms { left: var(--greet); right: 0; }
+.panel[data-mode="login"] .greet { transform: translateX(calc(100% / 42 * 58)); }
+.panel[data-mode="login"] .forms { transform: translateX(calc(-100% / 58 * 42)); }
+
+.face { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 28px 34px;
+  opacity: 0; visibility: hidden; transform: translateY(8px); transition: opacity .16s ease, transform .16s ease, visibility 0s .16s; }
+.panel[data-mode="register"] .face.for-register, .panel[data-mode="login"] .face.for-login {
+  opacity: 1; visibility: visible; transform: none; transition: opacity .3s ease .32s, transform .34s ease .32s, visibility 0s; }
+.greet h2 { margin: 0 0 10px; font: 900 clamp(22px, 2.5vw, 28px)/1.05 Golos; letter-spacing: -.03em; text-transform: uppercase; overflow-wrap: anywhere; }
+.greet p { margin: 0 0 18px; color: var(--muted); max-width: 28ch; }
+.ghost { align-self: flex-start; min-height: 46px; padding: 0 18px; border-radius: 23px; border: 1px solid rgba(242,243,238,.4); background: rgba(242,243,238,.06);
+  color: var(--paper); font: 700 14px/1 Golos; cursor: pointer; }
+.ghost:hover { background: rgba(242,243,238,.14); }
+
+form h1 { margin: 0 0 14px; font: 900 26px/1.1 Golos; letter-spacing: -.02em; }
+.f { margin-bottom: 10px; }
+.f label { display: block; font: 700 12px/1.2 Golos; color: var(--muted); margin-bottom: 5px; }
+.in { position: relative; }
+.in input { width: 100%; height: 50px; border-radius: 14px; border: 1px solid var(--line); background: rgba(17,19,15,.5); color: var(--paper);
+  font: 400 16px/1 Golos, system-ui, sans-serif; padding: 0 14px; outline: 0; -webkit-appearance: none; appearance: none; }
+.in input::placeholder { color: rgba(242,243,238,.36); }
+.in input:focus-visible { border-color: var(--acid); box-shadow: 0 0 0 3px rgba(230,255,87,.2); }
+.in input[aria-invalid="true"] { border-color: #FF8A7A; }
+.in input:-webkit-autofill { -webkit-text-fill-color: #F2F3EE; box-shadow: 0 0 0 100px #23261f inset; caret-color: #F2F3EE; }
+.in.pw input { padding-right: 96px; }
+.eye { position: absolute; right: 4px; top: 4px; height: 42px; min-width: 84px; padding: 0 10px; border: 0; border-radius: 11px; background: rgba(242,243,238,.1); color: var(--paper); font: 700 12px/1 Golos; cursor: pointer; }
+.err { margin: 5px 0 0; font-size: 12px; color: #FFB3A8; min-height: 0; }
+.check { display: flex; gap: 10px; align-items: flex-start; margin: 4px 0 2px; font-size: 13px; color: var(--muted); cursor: pointer; }
+.check input { width: 22px; height: 22px; margin: 0; flex: none; accent-color: #E6FF57; }
+.go { width: 100%; min-height: 52px; margin-top: 12px; border: 0; border-radius: 16px; background: var(--acid); color: var(--ink); font: 700 16px/1 Golos; cursor: pointer; }
+button:focus-visible, .check input:focus-visible { outline: 2px solid var(--acid); outline-offset: 3px; }
+.go:focus-visible { outline-color: var(--paper); }
+.result { margin: 12px 0 0; padding: 10px 12px; border-radius: 12px; background: rgba(230,255,87,.12); border: 1px solid rgba(230,255,87,.35); font-size: 13px; }
+.foot { position: relative; z-index: 1; max-width: 880px; margin-top: 16px; font-size: 12px; color: var(--muted); text-align: center; }
+
+/* Phone: no tiny columns. The two zones stack and change places vertically. */
+@media (max-width: 719px) {
+  .panel { height: calc(var(--gh) + 540px); margin: 18px 0 0; border-radius: 24px; }
+  .zone { left: 0; right: 0; width: auto; }
+  .greet { top: 0; bottom: auto; height: var(--gh); box-shadow: 0 0 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.22), inset 0 -1px 0 rgba(255,255,255,.08); }
+  .forms { top: var(--gh); bottom: 0; }
+  .panel[data-mode="login"] .greet { transform: translateY(540px); }
+  .panel[data-mode="login"] .forms { transform: translateY(calc(-1 * var(--gh))); }
+  .face { padding: 18px 20px; }
+  .greet h2 { font-size: 24px; margin-bottom: 6px; }
+  .greet p { margin-bottom: 12px; max-width: none; font-size: 14px; }
+  .ghost { min-height: 44px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .zone, .face, .panel .face.for-register, .panel .face.for-login { transition: none !important; }
+  .face { transform: none; }
+}
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+<header class="top"><span class="logo">ТРИБУНА</span><span class="demo">Демо · данные не отправляются</span></header>
+
+<main class="panel" id="panel" data-mode="register">
+  <section class="zone greet" aria-live="off">
+    <div class="face for-register">
+      <h2>С возвращением!</h2>
+      <p>Уже есть аккаунт? Войдите, чтобы вернуться к избранному.</p>
+      <button class="ghost" type="button" data-go="login">Войти →</button>
+    </div>
+    <div class="face for-login">
+      <h2>Привет, болельщик!</h2>
+      <p>Ещё не с нами? Создайте аккаунт — это пара полей.</p>
+      <button class="ghost" type="button" data-go="register">Создать аккаунт →</button>
+    </div>
+  </section>
+
+  <section class="zone forms">
+    <form class="face for-register" id="register" novalidate autocomplete="on">
+      <h1>Создать аккаунт</h1>
+      <div class="f"><label for="r-name">Имя</label><div class="in"><input id="r-name" name="name" type="text" autocomplete="name" placeholder="Как к вам обращаться" aria-describedby="e-r-name"></div><p class="err" id="e-r-name" role="alert"></p></div>
+      <div class="f"><label for="r-email">Почта</label><div class="in"><input id="r-email" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="name@example.ru" aria-describedby="e-r-email"></div><p class="err" id="e-r-email" role="alert"></p></div>
+      <div class="f"><label for="r-pass">Пароль</label><div class="in pw"><input id="r-pass" name="new-password" type="password" autocomplete="new-password" placeholder="Не короче 8 символов" aria-describedby="e-r-pass"><button class="eye" type="button" aria-controls="r-pass" aria-pressed="false">Показать</button></div><p class="err" id="e-r-pass" role="alert"></p></div>
+      <label class="check"><input id="r-age" type="checkbox" aria-describedby="e-r-age"><span>Мне исполнилось 18 лет</span></label><p class="err" id="e-r-age" role="alert"></p>
+      <button class="go" type="submit">Зарегистрироваться</button>
+      <p class="result" id="res-register" role="status" hidden></p>
+    </form>
+
+    <form class="face for-login" id="login" novalidate autocomplete="on">
+      <h1>Вход</h1>
+      <div class="f"><label for="l-email">Почта</label><div class="in"><input id="l-email" name="email" type="email" inputmode="email" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="name@example.ru" aria-describedby="e-l-email"></div><p class="err" id="e-l-email" role="alert"></p></div>
+      <div class="f"><label for="l-pass">Пароль</label><div class="in pw"><input id="l-pass" name="password" type="password" autocomplete="current-password" placeholder="Ваш пароль" aria-describedby="e-l-pass"><button class="eye" type="button" aria-controls="l-pass" aria-pressed="false">Показать</button></div><p class="err" id="e-l-pass" role="alert"></p></div>
+      <button class="go" type="submit">Войти</button>
+      <p class="result" id="res-login" role="status" hidden></p>
+    </form>
+  </section>
+</main>
+
+<p class="foot">Демонстрация экрана. Введённое остаётся в этой вкладке: никуда не отправляется и не сохраняется, аккаунты не создаются.</p>
+
+<script>
+(function () {
+  'use strict';
+  var panel = document.getElementById('panel');
+  var faces = { register: panel.querySelectorAll('.for-register'), login: panel.querySelectorAll('.for-login') };
+  function setMode(mode, user) {
+    if (mode !== 'login' && mode !== 'register') mode = 'register';
+    panel.dataset.mode = mode;
+    Object.keys(faces).forEach(function (k) { Array.prototype.forEach.call(faces[k], function (f) { f.inert = k !== mode; f.setAttribute('aria-hidden', k !== mode ? 'true' : 'false'); }); });
+    document.title = (mode === 'login' ? 'Вход' : 'Регистрация') + ' — Трибуна, демо';
+    if (user) {
+      try { history.replaceState(null, '', '?mode=' + mode); } catch (e) { /* file:// */ }
+      // Focus goes to the form that has just become available, without scrolling the page.
+      var first = document.getElementById(mode).querySelector('input');
+      if (first && window.matchMedia('(hover: hover)').matches) first.focus({ preventScroll: true });
+    }
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('[data-go]'), function (b) {
+    b.addEventListener('click', function () { setMode(b.dataset.go, true); });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('.eye'), function (b) {
+    b.addEventListener('click', function () {
+      var input = document.getElementById(b.getAttribute('aria-controls')), show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      b.textContent = show ? 'Скрыть' : 'Показать'; b.setAttribute('aria-pressed', show ? 'true' : 'false');
+    });
+  });
+
+  var EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  var RULES = {
+    'r-name': function (v) { return v.trim().length >= 2 ? '' : 'Укажите имя: хотя бы две буквы.'; },
+    'r-email': function (v) { return !v.trim() ? 'Укажите почту.' : EMAIL.test(v.trim()) ? '' : 'Похоже, в адресе ошибка. Пример: name@example.ru'; },
+    'r-pass': function (v) { return !v ? 'Придумайте пароль.' : v.length < 8 ? 'Пароль короче 8 символов: сейчас ' + v.length + '.' : !/\d/.test(v) || !/[^\d\s]/.test(v) ? 'Добавьте в пароль и буквы, и цифры.' : ''; },
+    'r-age': function (v, el) { return el.checked ? '' : 'Сервис только для совершеннолетних: подтвердите возраст.'; },
+    'l-email': function (v) { return !v.trim() ? 'Укажите почту.' : EMAIL.test(v.trim()) ? '' : 'Похоже, в адресе ошибка. Пример: name@example.ru'; },
+    'l-pass': function (v) { return v ? '' : 'Введите пароль.'; }
+  };
+  function check(id) {
+    var el = document.getElementById(id), msg = RULES[id](el.value, el);
+    document.getElementById('e-' + id).textContent = msg;
+    if (msg) el.setAttribute('aria-invalid', 'true'); else el.removeAttribute('aria-invalid');
+    return !msg;
+  }
+  Object.keys(RULES).forEach(function (id) {
+    var el = document.getElementById(id);
+    // Errors appear on submit; afterwards they clear as soon as the field becomes valid.
+    el.addEventListener(el.type === 'checkbox' ? 'change' : 'input', function () { if (el.hasAttribute('aria-invalid')) check(id); });
+  });
+  function wire(formId, ids, done) {
+    var form = document.getElementById(formId), res = document.getElementById('res-' + formId);
+    form.addEventListener('submit', function (e) {
+      e.preventDefault(); // nothing leaves the page
+      res.hidden = true;
+      var bad = ids.filter(function (id) { return !check(id); });
+      if (bad.length) { document.getElementById(bad[0]).focus(); return; }
+      res.textContent = done; res.hidden = false;
+    });
+    form.addEventListener('input', function () { res.hidden = true; });
+  }
+  wire('register', ['r-name', 'r-email', 'r-pass', 'r-age'], 'Поля заполнены верно. Это демо: аккаунт не создан, данные никуда не отправлены.');
+  wire('login', ['l-email', 'l-pass'], 'Поля заполнены верно. Это демо: вход не выполнен, данные никуда не отправлены.');
+
+  var q = /[?&]mode=(login|register)/.exec(location.search);
+  setMode(q ? q[1] : 'register', false);
+  window.__auth = { mode: function () { return panel.dataset.mode; } };
+})();
+</script>
+</body>
+</html>
