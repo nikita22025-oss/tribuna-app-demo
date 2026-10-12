@@ -321,3 +321,8 @@ img[src*="/leon."], img[src*="/pari."], image[href*="/pari."] { filter: invert(1
 /* выпадающий список тем остаётся графитовым листом под шапкой, со светлым текстом */
 .classic-masthead .topic-directory { --ink: #F2F3EE; --muted: rgba(242,243,238,.72); --line: rgba(242,243,238,.14); --orange: #E6FF57; color: #F2F3EE; background-color: var(--g-solid); }
 .classic-masthead .topic-directory a { color: #F2F3EE; }
+
+/* Версия 3: логотип в шапке — файл без собственной подложки (tribuna-logo-plain.svg), так что отдельного
+   прямоугольника нет ни при каких стилях; лайм задан самой шапке целиком, вместе с меню. */
+.site-header.classic-masthead, .site-header.classic-masthead.is-article, .site-header.classic-masthead .classic-brand-strip, .site-header.classic-masthead .classic-nav { background-color: #E6FF57 !important; background-image: none !important; }
+.site-header .g-logo-box, .site-header .g-logo, .site-header .classic-wordmark { background: transparent !important; border-radius: 0 !important; box-shadow: none !important; }
