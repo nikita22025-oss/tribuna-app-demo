@@ -1,0 +1,114 @@
+/* Светлая тема «Графит»: переопределения поверх исходных стилей. */
+/* Бумага #F2F3EE, карточки белые, текст графит #1B1D19, лайм #E6FF57 только заливкой,
+   акцентный текст — тёмно-оливковый #4D601E. */
+
+:root {
+  --muted: rgba(27,29,25,.66);
+  --line: rgba(27,29,25,.12);
+  --glass: rgba(255,255,255,.82);
+  --olive: #4D601E;
+  --card: #FFFFFF;
+  --card-soft: #FAFBF7;
+  --shadow-card: 0 1px 0 rgba(255,255,255,.9) inset, 0 18px 44px -26px rgba(27,29,25,.28), 0 2px 6px rgba(27,29,25,.04);
+}
+html { background: #F2F3EE; }
+body { background: #F2F3EE; color: var(--ink); }
+em { color: var(--olive); }
+:focus-visible { outline-color: var(--ink); }
+::selection { background: #E6FF57; color: #1B1D19; }
+
+/* вуаль: лёгкая бумажная дымка под текстом слева */
+.veil { background: linear-gradient(90deg, rgba(242,243,238,.72) 0%, rgba(242,243,238,.34) 55%, rgba(242,243,238,0) 100%) !important; }
+
+/* шапка */
+.nav a:hover { color: var(--ink); }
+.age { color: var(--ink); border-color: rgba(27,29,25,.22); background: rgba(255,255,255,.6); }
+.switch { background: rgba(255,255,255,.7); color: var(--ink); }
+.switch:hover { border-color: var(--ink); }
+
+.kicker { color: var(--olive); }
+.btn { box-shadow: 0 0 0 1px rgba(27,29,25,.10) inset, 0 14px 28px -14px rgba(27,29,25,.38); }
+.btn:hover { box-shadow: 0 0 0 1px rgba(27,29,25,.14) inset, 0 20px 36px -14px rgba(27,29,25,.44); }
+.btn.dark { background: var(--ink); color: #F2F3EE; box-shadow: none; }
+
+/* телефоны: корпус остаётся тёмным предметом, тень мягкая */
+.phone { box-shadow: 0 0 0 1px rgba(27,29,25,.5), 0 34px 60px -24px rgba(27,29,25,.42), 0 12px 24px -10px rgba(27,29,25,.16); }
+.p-back img { filter: brightness(.78) saturate(.85); }
+.feat-shot::before { inset: 8% 2%; background: radial-gradient(closest-side, rgba(230,255,87,.62), rgba(230,255,87,.18) 62%, transparent); }
+
+/* первый экран */
+.scroll-hint i { background: var(--ink); }
+.scr-nav, .scr-name, .scr-hint { color: var(--ink); }
+.scr-hint { opacity: .66; }
+
+/* разделы */
+.feat-text { box-shadow: var(--shadow-card); }
+.num { color: var(--olive); }
+h3 sup { color: var(--ink); background: #E6FF57; padding: .32em .5em .26em; border-radius: 999px; top: .35em; }
+.chips li { color: var(--ink); background: var(--card); border-color: rgba(27,29,25,.14); }
+.lr-noscript { color: var(--muted); }
+
+/* цифры */
+.grow-card { box-shadow: 0 0 0 1px rgba(27,29,25,.08) inset, 0 40px 80px -40px rgba(77,96,30,.5); }
+.stats li { box-shadow: var(--shadow-card); }
+.stats b { color: var(--olive); }
+
+/* с собой */
+.glass { box-shadow: var(--shadow-card); }
+.glass svg { stroke: var(--ink); background: #E6FF57; border-radius: 16px; padding: 10px; box-sizing: border-box; width: 60px; height: 60px; }
+
+/* статус: единственная намеренно тёмная графитовая секция */
+.final-card { background: linear-gradient(135deg, #24271F, #1B1D19 60%); color: #F2F3EE; box-shadow: 0 40px 80px -40px rgba(27,29,25,.6); }
+.final-card .kicker { color: #E6FF57; }
+.final-card em { color: #E6FF57; }
+.final-card p:not(.kicker) { color: rgba(242,243,238,.74); }
+.final-card .btn.dark { background: #E6FF57; color: #1B1D19; }
+.final-card :focus-visible { outline-color: #E6FF57; }
+
+/* подвал */
+.foot { background: rgba(250,251,247,.9); border-top-color: var(--line); }
+.legal b { color: var(--ink); background: #E6FF57; padding: 2px 7px; border-radius: 999px; font-size: 12px; }
+
+/* ---------- живой рейтинг ---------- */
+.lr { --muted: rgba(27,29,25,.66); --line: rgba(27,29,25,.12);
+  background: #FAFBF7; color: #1B1D19; border: 1px solid rgba(27,29,25,.12);
+  box-shadow: 0 1px 0 rgba(255,255,255,.9) inset, 0 30px 70px -40px rgba(27,29,25,.35); }
+.lr::before { background: radial-gradient(40% 50% at 24% 40%, rgba(230,255,87,.42), transparent 70%), radial-gradient(36% 44% at 82% 60%, rgba(230,255,87,.22), transparent 72%); }
+.lr-kicker { color: #4D601E; }
+.lr-title { color: #1B1D19; }
+.lr-search { background: #FFFFFF; border-color: rgba(27,29,25,.16); }
+.lr-search input { color: #1B1D19; }
+.lr-search button { background: rgba(27,29,25,.08); color: #1B1D19; }
+.lr-chip { background: #FFFFFF; border-color: rgba(27,29,25,.16); color: rgba(27,29,25,.78); }
+.lr-chip[aria-pressed="true"] { background: #E6FF57; border-color: rgba(27,29,25,.28); color: #1B1D19; }
+.lr-state b { color: #1B1D19; }
+.lr-card { background: linear-gradient(160deg, #FFFFFF, #FBFCF8 60%, #F4F5EF); border-color: rgba(27,29,25,.13);
+  box-shadow: 0 26px 46px -30px rgba(27,29,25,.5), 0 2px 8px rgba(27,29,25,.05), inset 0 1px 0 #fff; }
+.lr-card::before { opacity: .3; }
+.lr-card[aria-current="true"] { border-color: rgba(27,29,25,.3);
+  box-shadow: 0 0 0 4px #E6FF57, 0 30px 50px -28px rgba(27,29,25,.55), inset 0 1px 0 #fff; }
+/* боковые карточки уходят в бумагу прозрачностью, без серого затемнения */
+.lr-card:not([aria-current="true"]) { filter: none !important; }
+.lr-plate { background: #F2F3EE; border: 1px solid rgba(27,29,25,.08); }
+.lr-plate.text { background: #1B1D19; color: #F2F3EE; }
+.lr-status { color: #4D601E; }
+.lr-status.warn { color: #8A4D28; }
+.lr-sum { color: #1B1D19; }
+.lr-btn { background: rgba(27,29,25,.05); border-color: rgba(27,29,25,.16); color: #1B1D19; }
+.lr-btn.main { background: #E6FF57; border-color: rgba(27,29,25,.22); color: #1B1D19; }
+.lr-btn.pick[aria-pressed="true"] { background: #1B1D19; color: #F2F3EE; border-color: #1B1D19; }
+.lr-now span { color: #4D601E; }
+.lr-dots i { background: rgba(27,29,25,.2); }
+.lr-dots i.on { background: #1B1D19; }
+.lr-compare { box-shadow: 0 0 0 1px rgba(27,29,25,.12) inset, 0 16px 30px -20px rgba(27,29,25,.4); }
+.lr button:focus-visible, .lr input:focus-visible, .lr-stage:focus-visible, .lr-sheet button:focus-visible, .lr-sheet a:focus-visible { outline-color: #1B1D19; }
+
+/* листы «Подробности» и «Сравнение» */
+.lr-sheet-back { background: rgba(27,29,25,.42); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+.lr-sheet-body { background: #FAFBF7; box-shadow: 0 -20px 60px -20px rgba(27,29,25,.35); }
+.lr-sheet .warn { color: #5E3418; }
+.lr-sheet a { color: #4D601E; }
+
+/* Панель рейтинга не должна прокручиваться вбок при фокусе на скрытой боковой карточке
+   (с overflow: hidden браузер сдвигал содержимое панели после нажатия «+»). */
+@supports (overflow: clip) { .lr { overflow: clip; } }
