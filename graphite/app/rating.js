@@ -77,7 +77,9 @@
       c.setAttribute('aria-label', b.name + '. ' + (b.amount ? (b.prefix ? b.prefix + ' ' : '') + money(b.amount) + ', ' + b.label : b.label));
       var row = el('div', 'lr-row'); row.appendChild(plate(b));
       row.appendChild(el('span', 'lr-num', String(b.order).padStart(2, '0') + ' / ' + String(state.all.length).padStart(2, '0'))); c.appendChild(row);
-      var st = el('p', 'lr-status', b.statusText); if (b.statusText !== 'Правила проверены') st.classList.add('warn'); c.appendChild(st);
+      // The vague «Условия уточняются» is not shown to the reader (owner, 12.10.2026); real problems are.
+      var label = b.statusText === 'Условия уточняются' ? '' : b.statusText;
+      var st = el('p', 'lr-status', label || '\u00a0'); if (label && label !== 'Правила проверены') st.classList.add('warn'); if (!label) st.setAttribute('aria-hidden', 'true'); c.appendChild(st);
       var offer = el('div', 'lr-offer'); offer.appendChild(el('span', 'lr-kind', b.label)); offer.appendChild(sum(b, 'lr-sum'));
       offer.appendChild(el('p', 'lr-text', b.summary)); offer.appendChild(el('p', 'lr-checked', b.checkedAt ? 'На дату проверки · ' + date(b.checkedAt) : 'Дата проверки не указана'));
       c.appendChild(offer);
@@ -206,7 +208,9 @@
     content.textContent = ''; content.appendChild(plate(b));
     var h = el('h2', null, b.name); h.id = 'lr-sheet-title'; content.appendChild(h);
     content.appendChild(sum(b, 'big')); content.appendChild(el('p', null, b.label)); content.appendChild(el('p', null, b.summary));
-    content.appendChild(el('p', b.statusText === 'Правила проверены' ? 'note' : 'warn', b.statusText + (b.checkedAt ? ' · проверено ' + date(b.checkedAt) : ' · дата проверки не указана')));
+    content.appendChild(b.statusText === 'Условия уточняются'
+      ? el('p', 'note', b.checkedAt ? 'По официальной странице · проверено ' + date(b.checkedAt) : 'По официальной странице')
+      : el('p', b.statusText === 'Правила проверены' ? 'note' : 'warn', b.statusText + (b.checkedAt ? ' · проверено ' + date(b.checkedAt) : ' · дата проверки не указана')));
     content.appendChild(el('h3', null, 'Коротко'));
     content.appendChild(rows([['Депозит', b.deposit], ['Кому', b.audience], ['Срок', b.duration], ['Отыгрыш', b.wager], ['Коэффициенты', b.odds], ['Промокод', b.promoCode || 'Не требуется или не указан'], ['Период акции', b.period || b.periodText || 'В источнике не указан']]));
     if ((b.steps || []).length) { content.appendChild(el('h3', null, 'Как это устроено')); content.appendChild(list('ol', b.steps)); }
@@ -229,7 +233,7 @@
     var tb = el('tbody');
     [['Предложение', function (b) { return (b.amount ? (b.prefix ? b.prefix.toLowerCase() + ' ' : '') + money(b.amount) + ' · ' : '') + b.label; }], ['Депозит', function (b) { return b.deposit; }], ['Кому', function (b) { return b.audience; }],
       ['Срок', function (b) { return b.duration; }], ['Отыгрыш', function (b) { return b.wager; }], ['Коэффициенты', function (b) { return b.odds; }], ['Промокод', function (b) { return b.promoCode || 'Не указан'; }],
-      ['Проверка', function (b) { return b.statusText + (b.checkedAt ? ' · ' + date(b.checkedAt) : ''); }]].forEach(function (r) {
+      ['Проверка', function (b) { return (b.statusText === 'Условия уточняются' ? 'По официальной странице' : b.statusText) + (b.checkedAt ? ' · ' + date(b.checkedAt) : ''); }]].forEach(function (r) {
       var row = el('tr'), th = el('th', null, r[0]); th.scope = 'row'; row.appendChild(th); books.forEach(function (b) { row.appendChild(el('td', null, r[1](b) || '—')); }); tb.appendChild(row);
     });
     t.appendChild(tb); wrap.appendChild(t); content.appendChild(wrap);
