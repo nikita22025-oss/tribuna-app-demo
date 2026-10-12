@@ -123,6 +123,8 @@
     if (R) R.closeSheet();
     var changed = key !== currentKey;
     if (current && current !== next) current.hidden = true;
+    // Opened straight on a section link: no screen has been current yet, so hide every other one.
+    if (!current) Object.keys(screens).forEach(function (k) { if (screens[k] !== next) screens[k].hidden = true; });
     next.hidden = false; next.classList.remove('enter');
     if (changed && !first && !reduce.matches) { void next.offsetWidth; next.classList.add('enter'); }
     current = next; currentKey = key;

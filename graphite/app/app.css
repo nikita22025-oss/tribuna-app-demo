@@ -277,3 +277,13 @@ a.ncard:hover { border-color: rgba(230,255,87,.5); }
 /* «Графит»: the gallery background instead of the lime streams. Only the backdrop changes. */
 .graphite-bg { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
 .veil { background: linear-gradient(90deg, rgba(17,19,15,.55) 0%, rgba(17,19,15,.22) 55%, rgba(17,19,15,0) 100%) !important; }
+
+/* ===== Версия 2 (12.10.2026): шапка одного цвета =====
+   Тот же подход, что в демо сайта: вся шапка — сплошной фирменный лайм, логотип с красной короной лежит
+   прямо на ней, без отдельного скруглённого прямоугольника. Размер логотипа мобильный, не настольный. */
+.top { background: #E6FF57; color: #1B1D19; padding-bottom: 10px; position: relative; z-index: 2; }
+.top .logo { border-radius: 0; }
+.top .age { color: #1B1D19; border-color: rgba(27,29,25,.35); background: transparent; }
+.top .round { background: transparent; border: 1px solid rgba(27,29,25,.35); color: #1B1D19; box-shadow: none; }
+.top .round svg { stroke: #1B1D19; }
+.top a:focus-visible { outline: 2px solid #1B1D19; outline-offset: 3px; }
