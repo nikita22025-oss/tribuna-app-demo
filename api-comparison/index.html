@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Трибуна — сравнение API спортивных данных</title>
+<style>
+:root { --bg:#F4F6F3; --card:#FFFFFF; --ink:#1B1D19; --muted:#5F6B62; --line:#DDE3DA; --accent:#167D88; --pick:#F3FBD0; --pick-line:#B9D64A; --unknown:#8A5A1F; --unknown-bg:#FBF1DF; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#11130F; --card:#1B1D19; --ink:#F2F3EE; --muted:#A9B1A6; --line:#30352D; --accent:#6FD3DD; --pick:#27301A; --pick-line:#8FA83A; --unknown:#F0B45A; --unknown-bg:#33291A; } }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 -apple-system, "Segoe UI", Roboto, Arial, sans-serif; padding:28px 16px 48px; }
+.wrap { max-width:1040px; margin:0 auto; }
+h1 { font-size:clamp(26px,5vw,38px); line-height:1.15; margin:0 0 8px; letter-spacing:-.02em; }
+.sub { color:var(--muted); margin:0 0 22px; max-width:70ch; }
+.picks { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; margin:0 0 26px; }
+.pick { background:var(--pick); border:1px solid var(--pick-line); border-radius:14px; padding:14px 16px; }
+.pick b { display:block; font-size:17px; }
+.pick span { color:var(--muted); font-size:14px; }
+.pick small { display:inline-block; font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; margin-bottom:4px; }
+table { width:100%; border-collapse:separate; border-spacing:0; background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+th, td { text-align:left; padding:13px 14px; border-bottom:1px solid var(--line); vertical-align:top; }
+th { font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); background:var(--card); }
+tr:last-child td { border-bottom:0; }
+td.name a { color:var(--accent); font-weight:700; text-decoration:none; border-bottom:1px solid transparent; }
+td.name a:hover, td.name a:focus-visible { border-bottom-color:currentColor; }
+td.price { white-space:nowrap; font-weight:700; font-variant-numeric:tabular-nums; }
+tr.star td { background:var(--pick); }
+.tag { display:inline-block; margin-top:5px; font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px; border:1px solid var(--pick-line); }
+.unknown { color:var(--unknown); background:var(--unknown-bg); border-radius:6px; padding:1px 7px; font-size:13px; font-weight:600; white-space:nowrap; }
+.note { color:var(--muted); font-size:13px; }
+.foot { margin-top:22px; color:var(--muted); font-size:14px; }
+.foot li { margin:4px 0; }
+@media (max-width:720px) {
+  table, thead, tbody, tr, td { display:block; }
+  thead { position:absolute; left:-9999px; }
+  table { border:0; background:none; }
+  tr { background:var(--card); border:1px solid var(--line); border-radius:14px; margin:0 0 12px; overflow:hidden; }
+  tr.star { border-color:var(--pick-line); }
+  td { border:0; padding:6px 16px; }
+  td:first-child { padding-top:14px; font-size:18px; } td:last-child { padding-bottom:14px; }
+  td[data-l]::before { content:attr(data-l) ": "; color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.05em; font-weight:400; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Сравнение API спортивных данных</h1>
+  <p class="sub">14 сервисов для раздела прогнозов «Трибуны». Цены — стартовый платный тариф за месяц на 13 октября 2026 года, без налогов. Название ведёт на страницу сервиса.</p>
+
+  <div class="picks" aria-label="С чего начать">
+    <div class="pick"><small>Бюджетный старт</small><b>API-Football</b><span>Матчи, составы, статистика — от 19 $ в месяц.</span></div>
+    <div class="pick"><small>Статистика и xG</small><b>Sportmonks</b><span>Подробная статистика от 29 € в месяц; xG — за доплату.</span></div>
+    <div class="pick"><small>Архив коэффициентов</small><b>The Odds API</b><span>Коэффициенты и их история — от 30 $ в месяц.</span></div>
+  </div>
+
+  <table>
+    <thead><tr><th>Сервис</th><th>Страна компании</th><th>Цена от, в месяц</th><th>Для чего</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+
+  <ul class="foot">
+    <li>Цена — входной платный тариф, а не стоимость всей системы прогнозов: нужные лиги, архив и дополнительные данные могут оплачиваться отдельно.</li>
+    <li><span class="unknown">не подтверждена</span> и <span class="unknown">по запросу</span> — сведений в открытых источниках нет: страну компании подтвердить не удалось, цену называет отдел продаж.</li>
+    <li>Страна — компания или её штаб-квартира, не расположение серверов. Для API-Football Франция указана по отраслевому каталогу и требует подтверждения.</li>
+    <li>Перед оплатой нужно уточнить у поставщика права на хранение данных, обучение моделей и публикацию прогнозов.</li>
+  </ul>
+</div>
+<script>
+(function () {
+  var rows = [
+    ['API-Football', 'https://www.api-football.com/pricing/', 'Франция', true, '19 $', 'Матчи, составы, статистика. Недорогой старт, есть бесплатный тариф.', 'Бюджетный старт'],
+    ['Sportmonks', 'https://www.sportmonks.com/football-api/plans-pricing/', 'Нидерланды', false, '29 €', 'Подробная статистика, от 5 лиг. xG — за доплату.', 'Статистика и xG с доплатой'],
+    ['The Odds API', 'https://the-odds-api.com/', 'Австралия', false, '30 $', 'Коэффициенты и их история. Дополнение к статистике для прогнозов.', 'Архив коэффициентов'],
+    ['football-data.org', 'https://www.football-data.org/pricing', 'Германия', false, '12 €', 'Результаты, расписание, таблицы. Есть бесплатный тариф; архив для моделей — 29 € в месяц.', ''],
+    ['TheSportsDB', 'https://www.thesportsdb.com/api_pricing.php', null, false, '9 $', 'Справочник: команды, игроки, изображения, результаты. Тариф для бизнеса — 20 $ в месяц.', ''],
+    ['iSports API', 'https://www.isportsapi.com/', null, false, '49 $', 'Матчи, составы, статистика и коэффициенты. Цена рекламная «от», состав пакета нужно уточнять.', ''],
+    ['SportsGameOdds', 'https://sportsgameodds.com/pricing', 'США', false, '99 $', 'Коэффициенты, события и результаты. Альтернатива для данных о коэффициентах.', ''],
+    ['Goalserve', 'https://www.goalserve.com/en/sport-data-feeds/football-api/prices', 'Кипр', false, '150 $', 'Результаты, статистика и коэффициенты. Пакет полной статистики — 300 $ в месяц.', ''],
+    ['SportsDataIO', 'https://sportsdata.io/contact-us', 'США', false, null, 'Спортивная статистика и коэффициенты. Коммерческий доступ через отдел продаж.', ''],
+    ['Sportradar', 'https://developer.sportradar.com/getting-started/docs/get-started', 'Швейцария', false, null, 'Подробные данные по многим видам спорта. Для проекта с индивидуальным договором.', ''],
+    ['Opta / Stats Perform', 'https://www.statsperform.com/products/opta-data/', 'Великобритания', false, null, 'Углублённая футбольная статистика для профессиональной аналитики.', ''],
+    ['Enetpulse', 'https://enetpulse.com/', 'Дания', false, null, 'Результаты, расписание и статистика. Пакет данных собирается под задачи проекта.', ''],
+    ['OddsJam API', 'https://oddsjam.com/odds-api', 'США', false, null, 'Коэффициенты и их изменения. Цена API считается отдельно от приложения.', ''],
+    ['LSports', 'https://www.lsports.eu/', 'Израиль', false, null, 'Профессиональные потоки коэффициентов. Для проекта с индивидуальным договором.', '']
+  ];
+  var body = document.getElementById('rows');
+  function el(tag, text, cls) { var n = document.createElement(tag); if (text != null) n.textContent = text; if (cls) n.className = cls; return n; }
+  rows.forEach(function (r) {
+    var tr = el('tr'); if (r[6]) tr.className = 'star';
+    var name = el('td', null, 'name'); var a = el('a', r[0]); a.href = r[1]; a.target = '_blank'; a.rel = 'noopener noreferrer'; name.appendChild(a);
+    if (r[6]) { name.appendChild(document.createElement('br')); name.appendChild(el('span', r[6], 'tag')); }
+    var country = el('td'); country.setAttribute('data-l', 'Страна');
+    if (r[2]) { country.appendChild(document.createTextNode(r[2])); if (r[3]) { country.appendChild(document.createTextNode(' ')); country.appendChild(el('span', 'требует подтверждения', 'unknown')); } }
+    else country.appendChild(el('span', 'не подтверждена', 'unknown'));
+    var price = el('td', null, 'price'); price.setAttribute('data-l', 'Цена от, в месяц');
+    if (r[4]) price.appendChild(document.createTextNode(r[4])); else price.appendChild(el('span', 'по запросу', 'unknown'));
+    var use = el('td', r[5]); use.setAttribute('data-l', 'Для чего');
+    tr.appendChild(name); tr.appendChild(country); tr.appendChild(price); tr.appendChild(use); body.appendChild(tr);
+  });
+})();
+</script>
+</body>
+</html>
