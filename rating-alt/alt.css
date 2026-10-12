@@ -33,3 +33,8 @@ h1 em { color: #4D601E; }
 .fresh { border-color: rgba(150,100,20,.4); background: rgba(240,180,90,.2); color: #5B4310; }
 .compare { background: var(--ink); color: var(--paper); }
 .compare button { background: var(--acid); color: var(--ink); }
+
+/* One brand mark everywhere: the app logo as a file (assets/brand/tribuna-logo.svg). */
+.logo { background: none !important; padding: 0 !important; border-radius: 0 !important; display: inline-block; line-height: 0; }
+.logo { flex: none; } .logo img { display: block; height: 44px; width: auto; max-width: none; }
+@media (max-width: 380px) { .logo img { height: 38px; } }

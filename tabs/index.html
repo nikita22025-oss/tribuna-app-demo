@@ -42,11 +42,16 @@ h1 span { color: var(--acid); }
 .count { margin: 0 18px 8px; font-size: 12px; color: var(--muted); }
 .foot { margin-top: 20px; font-size: 12px; line-height: 1.5; color: var(--muted); }
 @media (prefers-reduced-motion: reduce) { .tab { transition: none; } }
+
+/* One brand mark everywhere: the app logo as a file (assets/brand/tribuna-logo.svg). */
+.logo { background: none !important; padding: 0 !important; border-radius: 0 !important; display: inline-block; line-height: 0; }
+.logo { flex: none; } .logo img { display: block; height: 44px; width: auto; max-width: none; }
+@media (max-width: 380px) { .logo img { height: 38px; } }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="brand"><span class="logo">ТРИБУНА</span><span class="note">Демо, без звука</span></div>
+  <div class="brand"><span class="logo"><img src="tribuna-logo.svg" width="184" height="54" alt="Трибуна"></span><span class="note">Демо, без звука</span></div>
   <h1>Внутренние <span>вкладки</span></h1>
 
   <section class="block" aria-labelledby="hj">

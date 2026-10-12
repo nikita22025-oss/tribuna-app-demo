@@ -54,11 +54,16 @@ h1 span { color: var(--acid); }
 .none b { display: block; color: var(--paper); font-size: 18px; margin-bottom: 4px; }
 .foot { margin-top: 26px; font-size: 12px; line-height: 1.5; color: var(--muted); }
 .foot p { margin: 0 0 6px; }
+
+/* One brand mark everywhere: the app logo as a file (assets/brand/tribuna-logo.svg). */
+.logo { background: none !important; padding: 0 !important; border-radius: 0 !important; display: inline-block; line-height: 0; }
+.logo { flex: none; } .logo img { display: block; height: 44px; width: auto; max-width: none; }
+@media (max-width: 380px) { .logo img { height: 38px; } }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="brand"><span class="logo">ТРИБУНА</span><span class="age">18+</span></div>
+  <div class="brand"><span class="logo"><img src="tribuna-logo.svg" width="184" height="54" alt="Трибуна"></span><span class="age">18+</span></div>
   <h1>Панель <span>поиска</span></h1>
 
   <div class="stage">
