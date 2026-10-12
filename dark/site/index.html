@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#11130F">
+<title>Трибуна — журнал о спорте, людях и культуре (демо тёмного сайта)</title>
+<meta name="description" content="Демонстрационный макет: как выглядел бы сайт trbn.ru в тёмном стиле. 18+">
+<script>document.documentElement.classList.add('js');</script>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="rating/rating.css">
+</head>
+<body>
+<a class="skip" href="#main" id="skip">К содержанию</a>
+<canvas class="flow" aria-hidden="true"></canvas>
+<div class="veil" aria-hidden="true"></div>
+
+<header class="top" id="top">
+  <div class="top-in">
+    <a class="logo" href="#/" aria-label="Трибуна, на главную"><img src="tribuna-logo.svg" width="184" height="54" alt="Трибуна"></a>
+    <nav class="nav" aria-label="Разделы сайта">
+      <button class="nav-all" id="topics-open" type="button" aria-expanded="false" aria-controls="topics">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1" y="1" width="5.5" height="5.5" rx="1"/><rect x="9.5" y="1" width="5.5" height="5.5" rx="1"/><rect x="1" y="9.5" width="5.5" height="5.5" rx="1"/><rect x="9.5" y="9.5" width="5.5" height="5.5" rx="1"/></svg>Все темы</button>
+      <a href="#/rubric/Футбол" data-nav="rubric/Футбол">Футбол</a>
+      <a href="#/rubric/Теннис" data-nav="rubric/Теннис">Теннис</a>
+      <a href="#/rubric/Баскетбол" data-nav="rubric/Баскетбол">Баскетбол</a>
+      <a href="#/rubric/Стиль" data-nav="rubric/Стиль">Стиль</a>
+      <a href="#/rubric/all" data-nav="rubric/all">Истории</a>
+      <a class="nav-bk" href="#/rating" data-nav="rating">Рейтинг БК <sup>18+</sup></a>
+    </nav>
+    <div class="top-side">
+      <span class="age" title="Материалы о букмекерах — для совершеннолетних">18+</span>
+      <button class="round" id="search-open" type="button" aria-label="Поиск по сайту" aria-expanded="false" aria-controls="search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.4 15.4 5 5"/></svg>
+      </button>
+      <button class="round menu-btn" id="menu-open" type="button" aria-label="Меню: все темы" aria-expanded="false" aria-controls="topics">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="panel" id="topics" hidden>
+  <div class="panel-in">
+    <div class="panel-head">
+      <h2 class="panel-title" id="topics-title">Все темы</h2>
+      <button class="round" id="topics-close" type="button" aria-label="Закрыть меню"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></button>
+    </div>
+    <nav aria-labelledby="topics-title"><ol class="topics" id="topics-list"></ol></nav>
+  </div>
+</div>
+
+<div class="panel" id="search" hidden>
+  <div class="panel-in">
+    <h2 class="sr-only" id="search-title">Поиск по сайту</h2>
+    <div class="s-stage">
+      <div class="bar" id="bar" role="search" aria-labelledby="search-title">
+        <div class="field" id="field">
+          <input id="q" type="search" placeholder="Материал, новость, матч, букмекер" aria-label="Поиск по журналу, новостям, матчам и букмекерам"
+                 autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" tabindex="-1">
+        </div>
+        <button class="knob" id="knob" type="button" aria-label="Закрыть поиск">
+          <svg id="lens" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.4 15.4 5 5"/></svg>
+          <svg id="cross" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="s-out" id="s-out" aria-live="polite"></div>
+  </div>
+</div>
+
+<main id="main" tabindex="-1">
+  <div id="view"></div>
+
+  <section id="view-rating" class="page" aria-labelledby="rating-h1" hidden>
+    <div class="wrap">
+      <p class="crumbs"><a href="#/">Журнал</a> <span aria-hidden="true">/</span> Рейтинг букмекеров <span class="tag-age">Россия · 18+</span></p>
+      <h1 id="rating-h1" class="page-title" tabindex="-1">Рейтинг <em>букмекеров.</em></h1>
+      <p class="page-lead" id="rating-lead">Предложения и условия в одной подборке.</p>
+      <p class="fineprint" id="rating-facts"></p>
+    </div>
+    <div class="wrap live-wrap">
+      <div id="live-rating" data-src="../data/app-data.json" data-logos="../logos/"></div>
+    </div>
+    <div class="wrap" id="rating-extra"></div>
+  </section>
+  <noscript><p class="nojs">Демо собирает страницы из файла данных — для этого нужен JavaScript.</p></noscript>
+</main>
+
+<footer class="foot">
+  <div class="foot-row">
+    <a class="logo" href="#/" aria-label="Трибуна, на главную"><img src="tribuna-logo.svg" width="184" height="54" alt="Трибуна" loading="lazy"></a>
+    <nav aria-label="Страницы действующего сайта trbn.ru"><ul class="foot-links" id="foot-links">
+      <li><a href="https://trbn.ru/about" target="_blank" rel="noopener">О редакции ↗</a></li>
+      <li><a href="https://trbn.ru/archive" target="_blank" rel="noopener">Архив новостей ↗</a></li>
+      <li><a href="https://trbn.ru/advertising" target="_blank" rel="noopener">Рекламодателям ↗</a></li>
+      <li><a href="https://trbn.ru/category/all" target="_blank" rel="noopener">Весь выпуск ↗</a></li>
+      <li><a href="https://trbn.ru/matches" target="_blank" rel="noopener">Матчи ↗</a></li>
+      <li><a href="https://trbn.ru/bookmakers" target="_blank" rel="noopener">Рейтинг БК ↗</a></li>
+    </ul></nav>
+  </div>
+  <div class="foot-row">
+    <p class="legal"><b>18+</b>Навигатор по букмекерам — редакционная подборка «Трибуны». Источники и даты проверки указаны в обзорах. «Трибуна» не принимает ставки. Коэффициенты могут меняться. Материалы о букмекерах — 18+. Участие в азартных играх может вызвать игровую зависимость.</p>
+    <p class="legal">В демо нет фотографий и иллюстраций действующего сайта: вместо них — типографские обложки по рубрикам. Тексты и даты — из публичных лент trbn.ru.</p>
+  </div>
+  <div class="foot-row small">
+    <span>© ТРИБУНА.РУ, 2026</span>
+    <ul class="foot-links">
+      <li><a href="https://trbn.ru/sitemap" target="_blank" rel="noopener">Все разделы ↗</a></li>
+      <li><a href="https://trbn.ru/privacy" target="_blank" rel="noopener">Политика конфиденциальности ↗</a></li>
+      <li><a href="https://trbn.ru/about" target="_blank" rel="noopener">Контакты и реквизиты ↗</a></li>
+      <li>ads@trbn.ru</li>
+    </ul>
+  </div>
+  <div class="foot-row small">
+    <p class="demo-note">Демонстрационный макет. Действующий сайт: <a href="https://trbn.ru" target="_blank" rel="noopener">trbn.ru</a>. <span id="data-stamp"></span></p>
+  </div>
+</footer>
+
+<script src="flow.js"></script>
+<script src="rating/rating.js"></script>
+<script src="site.js"></script>
+</body>
+</html>
