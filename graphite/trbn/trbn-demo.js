@@ -69,3 +69,6 @@
     if (close) close.addEventListener('click', function () { if (adRo) adRo.disconnect(); document.body.classList.remove('has-floating-ad'); document.documentElement.style.removeProperty('--floating-ad-space'); ad.remove(); });
   }
 })();
+
+// Demo copy: advertiser links are inert here. The real ad placements live on trbn.ru only.
+document.addEventListener('click', function (e) { var a = e.target.closest && e.target.closest('a[data-demo-ad]'); if (a) e.preventDefault(); }, true);
