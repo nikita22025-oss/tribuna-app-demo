@@ -1,0 +1,18 @@
+.jw-issue-heading{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:24px;scroll-margin-top:28px}
+.jw-issue-heading h2{font:500 15px/1.4 var(--font);margin:0}
+.jw-issue-heading time{font:400 13px/1.4 var(--font);color:var(--muted);font-variant-numeric:tabular-nums}
+.jw-previous>.editorial-masonry{margin-top:0}
+.jw-previous .format-cover-link{min-height:0;aspect-ratio:4/5}
+.jw-previous .format-cover-link h2{font-size:clamp(52px,17cqi,94px)}
+.jw-previous .jp-plate .jp-photo{aspect-ratio:6/5}
+.jw-previous .jp-plate .jp-photo img{height:100%;width:100%;object-fit:cover}
+.jw-previous .jp-three-card .jp-photo img{object-fit:contain}
+.jw-archive-link{display:flex;justify-content:space-between;align-items:center;min-height:44px;border-top:1px solid var(--line);padding-block:16px 26px;font:400 14px/1.4 var(--font)}
+.jw-archive-link span{font-size:24px}
+.jw-archive-link:hover{color:var(--orange)}
+@media(max-width:620px){
+ .jw-issue-heading{align-items:flex-start;gap:12px;margin-bottom:20px}
+ .jw-issue-heading h2{font-size:14px}
+ .jw-issue-heading time{font-size:12px;text-align:right}
+ .jw-previous .format-cover-link{min-height:0}
+}
