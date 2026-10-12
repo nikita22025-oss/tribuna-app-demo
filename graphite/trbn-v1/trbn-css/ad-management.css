@@ -1,0 +1,4 @@
+.special-artwork .ad-managed-art{display:block;width:100%;height:100%;object-fit:contain}
+.ad-managed-offer .winline-offer-copy{background:var(--paper,#f6f5f0)}
+.winline-offer-title .ad-offer-plain{font-size:clamp(28px,3.5vw,64px);line-height:1.05}
+.winline-offer-footer>span:first-child{max-width:75%}

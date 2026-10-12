@@ -1,0 +1,441 @@
+/* Страховка вёрстки под живую ленту.
+
+   Авторские форматы v6 рассчитаны на короткие плакаты в 3-5 слов
+   («БОЛЬШЕ, ЧЕМ СЧЁТ»). Новостные заголовки длиннее, поэтому:
+   1) подбор коротких заголовков делает маппер (основная защита);
+   2) здесь — предохранитель: даже случайно длинный текст не вылезет
+      за карточку и не наедет на соседнюю колонку.
+
+   Подключается ПОСЛЕ editorial.css. */
+
+/* Длинные слова переносим, а не выталкиваем за край. */
+.format-cover-link h2,
+.format-poster h2,
+.format-number h2,
+.format-briefs h2,
+.feature-condensed h2,
+.format-feature h2,
+.special-copy h2 {
+  overflow-wrap: break-word;
+  word-break: normal;
+  hyphens: auto;
+}
+
+/* Обложка: заголовок в потоке + нижний блок position:absolute —
+   при переполнении они наезжали друг на друга. Ограничиваем строки. */
+.format-cover-link h2 {
+  font-size: clamp(40px, 13cqi, 74px);
+  margin-bottom: 30px;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.format-cover-bottom p {
+  font-size: clamp(17px, 4.4cqi, 22px);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Плакат и числовой акцент — самые крупные кегли. */
+.format-poster h2 {
+  font-size: clamp(34px, 12cqi, 62px);
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.format-number h2 {
+  font-size: clamp(28px, 10cqi, 50px);
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.feature-condensed h2 {
+  font-size: clamp(42px, 15cqi, 78px);
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.format-briefs h2 {
+  font-size: clamp(40px, 14cqi, 72px);
+}
+
+/* Обычные форматы: аннотации RSS бывают длинными — подрезаем. */
+.format-feature h2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.format-quote h2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.format-feature > p,
+.format-poster p,
+.format-number > p {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Разворот «В сектор трибуны». */
+.special-copy h2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.special-copy > p {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Рекламный слайд разворота (пятое рекламное место). */
+.special-article-ad .special-ad-empty {
+  background: repeating-linear-gradient(135deg, var(--sunk, #ecebe3) 0 14px, transparent 14px 28px), #15231f;
+}
+.special-article-ad .special-erid {
+  font-size: 11px;
+  letter-spacing: .04em;
+  color: var(--muted, #767a6e);
+  margin-top: 8px;
+}
+
+/* Карточка новости не должна разъезжаться из-за нестандартных пропорций
+   картинок из лент (мы не знаем их точную высоту заранее). */
+.format-feature-image img,
+.format-cover-link > img {
+  background: #e9e7df;
+}
+
+/* ---------- Рекламные места букмекеров ---------- */
+/* Пять мест: верхний баннер, боковая плитка, две карточки в ленте
+   и второй слайд разворота. Маркировка «Реклама · 18+ · ERID» обязательна. */
+
+.live-ad { display: block; }
+.live-ad .ad-head {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px;
+  border-bottom: 1px solid var(--ink, #1b1d19); padding-bottom: 7px; margin-bottom: 10px;
+  font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+}
+.live-ad .ad-mark { font-weight: 700; }
+.live-ad .ad-advertiser { color: var(--muted, #767a6e); }
+.live-ad .ad-erid { margin-left: auto; color: var(--muted, #767a6e); text-transform: none; letter-spacing: .02em; }
+
+.live-ad-link { display: block; line-height: 0; overflow: hidden; }
+.live-ad-media { display: block; width: 100%; height: auto; }
+
+.live-ad .ad-foot { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+.live-ad-cta {
+  display: flex; justify-content: space-between; align-items: center; gap: 14px;
+  border-bottom: 1px solid var(--ink, #1b1d19); padding: 9px 0 6px;
+  font-size: 14px; text-decoration: none; color: inherit;
+}
+.live-ad-cta:hover { color: var(--orange, #c2481e); }
+.live-ad .ad-legal {
+  margin: 0; font-size: 10.5px; line-height: 1.45; letter-spacing: .02em;
+  color: var(--muted, #767a6e);
+}
+
+/* Верхний баннер — во всю ширину. */
+.live-ad-leaderboard { padding-block: 10px; }
+
+
+/* Широкий креатив (728×90) в узкой карточке ленты не растягиваем. */
+.live-ad-wide .live-ad-media { max-height: 120px; object-fit: contain; background: #f1efe7; }
+
+/* Рекламный слайд разворота: картинка заполняет кадр истории. */
+.special-article-ad .special-artwork > img { object-fit: cover; }
+
+/* Winline: оранжевый купон рядом с полным рекламным креативом. */
+.winline-offer {
+  position: relative; container-type: inline-size;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 0; align-items: start; background: #111315;
+}
+.winline-offer .winline-offer-art {
+  height: auto; min-height: 0; aspect-ratio: 1672 / 941;
+  align-self: center; background: #111315;
+}
+.winline-offer .winline-offer-art > img { object-fit: contain; }
+.winline-offer-art::after { display: none; }
+.winline-offer .winline-offer-copy {
+  align-self: stretch; margin: 0; padding: clamp(24px, 2.7vw, 42px);
+  border: 0; background: #ff781e; color: #191a17; min-width: 0;
+}
+.winline-offer-copy > * { flex-shrink: 0; }
+.winline-offer-meta {
+  display: flex; justify-content: space-between; gap: 16px; width: 100%;
+  font: 400 12px/1.4 var(--font);
+}
+.winline-offer-meta > span:first-child { font-weight: 700; }
+.winline-offer-copy .winline-offer-title {
+  display: block; overflow: visible; margin: 24px 0 10px; letter-spacing: -.025em;
+  font: 600 clamp(25px, 2.6vw, 40px)/1.08 var(--display);
+}
+.winline-offer-title > span { display: block; }
+.winline-offer-title > strong {
+  display: block; font: 600 clamp(76px, 8vw, 142px)/1.1 var(--display);
+  white-space: nowrap; letter-spacing: -.04em;
+  animation: winline-amount .75s cubic-bezier(.2,.8,.2,1) both;
+}
+.winline-offer-copy > .winline-offer-dek {
+  display: block; font: 400 clamp(21px, 1.8vw, 27px)/1.3 var(--serif);
+  margin: 0; letter-spacing: -.015em;
+}
+.winline-offer-scale { display: flex; gap: 5px; width: 100%; margin-top: 26px; }
+.winline-offer-scale > i {
+  display: block; flex: 1; height: 8px; background: #191a17;
+  transform-origin: left; animation: winline-step .45s ease-out both;
+  animation-delay: calc(.15s + var(--step) * .12s);
+}
+.winline-offer-copy > .winline-offer-caption {
+  display: block; font: 400 12px/1.5 var(--font); margin: 9px 0 22px;
+  letter-spacing: 0;
+}
+.winline-offer-steps { list-style: none; counter-reset: offer-step; margin: 0; padding: 0; width: 100%; }
+.winline-offer-steps > li {
+  display: grid; grid-template-columns: 20px 1fr; gap: 10px;
+  counter-increment: offer-step; padding: 9px 0; border-top: 1px solid #191a1738;
+  font: 400 14px/1.45 var(--font);
+}
+.winline-offer-steps > li::before { content: '0' counter(offer-step); font-size: 11px; padding-top: 2px; }
+.winline-offer-details { width: 100%; margin: 14px 0 22px; font: 400 12px/1.5 var(--font); }
+.winline-offer-details > summary { cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.winline-offer-terms > p { margin: 12px 0; }
+.winline-offer-terms > a { text-decoration: underline; text-underline-offset: 3px; }
+.winline-offer-cta {
+  display: flex; align-items: center; justify-content: space-between; gap: 18px;
+  width: 100%; margin-top: auto; padding: 17px 20px;
+  background: #191a17; color: #fff9ef; font: 600 15px/1.3 var(--font);
+}
+.winline-offer-cta > span { font-size: 25px; transition: transform .2s ease; }
+.winline-offer-cta:hover > span { transform: translate(3px, -3px); }
+.winline-offer-cta:focus-visible, .winline-offer-details :focus-visible {
+  outline: 2px solid #191a17; outline-offset: 4px;
+}
+.winline-offer-footer {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px;
+  width: 100%; margin-top: 14px; font: 400 10px/1.5 var(--font);
+}
+.winline-offer-footer > span:last-child { text-transform: none; white-space: nowrap; }
+@keyframes winline-amount { from { opacity: .25; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes winline-step { from { opacity: .15; transform: scaleX(.2); } to { opacity: 1; transform: scaleX(1); } }
+/* Высоту горизонтального блока определяет картинка, а не текст. */
+@media (min-width: 1101px) {
+  .winline-offer .winline-offer-copy {
+    position: absolute; inset: 0 0 0 60%; overflow-y: auto;
+    padding: 1.35em; font-size: clamp(11px, 1cqi, 16px);
+  }
+  .winline-offer-meta { font-size: max(10px, .8em); }
+  .winline-offer-copy .winline-offer-title { font-size: 1.65em; margin: .35em 0 .22em; }
+  .winline-offer-title > strong { font-size: 3.2em; line-height: 1.03; }
+  .winline-offer-copy > .winline-offer-dek { font-size: 1.5em; line-height: 1.2; }
+  .winline-offer-scale { margin-top: 1em; gap: .35em; }
+  .winline-offer-scale > i { height: .45em; }
+  .winline-offer-copy > .winline-offer-caption { font-size: max(10px, .8em); margin: .35em 0 .5em; }
+  .winline-offer-steps > li { font-size: max(12px, .95em); line-height: 1.3; padding: .35em 0; }
+  .winline-offer-steps > li::before { font-size: .8em; }
+  .winline-offer-details { position: relative; font-size: max(11px, .85em); margin: .35em 0 .5em; }
+  .winline-offer-terms {
+    position: absolute; bottom: calc(100% + 8px); left: 0; z-index: 3;
+    width: 100%; max-height: 18em; overflow: auto; padding: 1em;
+    background: #fff9ef; border: 1px solid #191a17;
+  }
+  .winline-offer-terms > p { margin: 0 0 .7em; }
+  .winline-offer-cta { font-size: 1em; padding: .85em 1em; }
+  .winline-offer-cta > span { font-size: 1.55em; }
+  .winline-offer-footer { font-size: max(10px, .68em); margin-top: .8em; gap: .4em 1em; }
+}
+@media (max-width: 1100px) {
+  .special-article.winline-offer { display: block; }
+  .winline-offer .winline-offer-copy { padding: 25px; }
+  .winline-offer-title > strong { font-size: clamp(76px, 18vw, 118px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .winline-offer-title > strong, .winline-offer-scale > i { animation: none; }
+  .winline-offer-cta > span { transition: none; }
+}
+
+/* ---------- Верхний баннер: бегущая строка ---------- */
+/* Широкий креатив-картинка в узкой полосе смотрелся плохо,
+   поэтому верхнее место — строка из текста и логотипа, едущая по кругу. */
+
+.live-ad-leaderboard { padding: 10px 0 12px; }
+
+.live-ad-leaderboard .live-ad-link {
+  display: block;
+  line-height: normal;
+  border-block: 2px solid currentColor;
+  padding: 14px 0;
+  overflow: hidden;
+}
+
+/* Ticker-only layout: stationary ERID immediately above the bottom rule. */
+.live-ad-leaderboard.live-ad-ticker { padding: 0; }
+.live-ad-leaderboard.live-ad-ticker .live-ad-link { padding: 14px 0 5px; }
+.live-ad-ticker .ad-ticker-erid {
+  display: block;
+  margin-top: 5px;
+  padding-inline: 12px;
+  color: #96988f;
+  font: 400 11px/1.3 var(--font, sans-serif);
+  text-align: right;
+  text-transform: none;
+  letter-spacing: .02em;
+}
+
+.ad-ticker { overflow: hidden; }
+
+.ad-ticker-track {
+  display: flex;
+  width: max-content;
+  animation: ad-marquee 32s linear infinite;
+  will-change: transform;
+}
+.live-ad-leaderboard:hover .ad-ticker-track { animation-play-state: paused; }
+
+@keyframes ad-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.ad-ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(22px, 3vw, 44px);
+  padding-right: clamp(22px, 3vw, 44px);
+}
+
+.ad-ticker-text {
+  font-family: var(--display, Oswald, sans-serif);
+  font-weight: 600;
+  font-size: clamp(26px, 3.6vw, 52px);
+  line-height: 1;
+  letter-spacing: -.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ad-ticker-logo {
+  display: block;
+  height: clamp(24px, 2.6vw, 38px);
+  width: auto;
+  flex: none;
+}
+
+/* Дисклеймер вынесен из картинки в текст. */
+.live-ad-leaderboard .ad-legal {
+  margin-top: 9px;
+  max-width: 100%;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ad-ticker-track { animation: none; }
+}
+
+/* ---------- Логотип ----------
+   Убрали «.ру» из масштхеда: домен и так в адресной строке, а надпись
+   отъедала место у крупной типографики. Вместо него — красная точка,
+   которая ставит визуальную точку в конце слова. */
+.masthead .domain { display: none; }
+
+.wordmark-dot {
+  display: inline-block;
+  width: .2em;                    /* вдвое крупнее */
+  height: .2em;
+  /* Точка сидит справа снизу от «А» и заезжает на букву.
+     top опускает её ниже базовой линии, margin-left задаёт глубину наезда. */
+  margin-left: -.06em;
+  position: relative;
+  top: .05em;
+  z-index: 1;
+  border-radius: 50%;
+  background: #e0301e;            /* красный акцент логотипа */
+  vertical-align: baseline;
+}
+
+/* Эмблема команды вместо инициалов (если нашлась в справочнике). */
+.team-badge-logo {
+  background: transparent !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.team-badge-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* Закреплённая журнальная витрина. Бумага, крупный Oswald, две фотоистории. */
+.pinned-opening{display:grid;grid-template-columns:repeat(2,minmax(0,1fr)) minmax(260px,.94fr);gap:clamp(20px,2.2vw,40px);align-items:start;margin-top:38px;margin-bottom:64px}
+.pinned-story{min-width:0;container-type:inline-size}
+.pinned-story h2{font-family:var(--display,Oswald,sans-serif);font-weight:700;font-size:clamp(32px,14cqi,76px);line-height:1.08;letter-spacing:-.045em;text-transform:uppercase;hyphens:none;overflow-wrap:normal}
+.pinned-story h2{margin:0 0 24px}
+.pinned-story h2 a{color:inherit;text-decoration:none}
+.pinned-story h2 a:hover{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:6px}
+.pinned-art{display:block;overflow:hidden;color:inherit}
+.pinned-photo,.cover-collage{position:relative;aspect-ratio:3/4;overflow:hidden;background:#172521}
+.pinned-photo img,.cover-collage img{display:block;width:100%;height:100%;object-fit:cover}
+.pinned-story-2 .pinned-photo{aspect-ratio:3/4.55}
+.pinned-story-2 .pinned-photo img{object-position:52% 50%}
+.pinned-story-3 .pinned-photo img{object-position:61% 50%}
+.pinned-story-meta{display:flex;justify-content:space-between;gap:12px;margin-top:14px;font-size:12px;color:var(--muted)}
+.pinned-story>p{font-family:Georgia,serif;font-size:clamp(17px,1.4vw,22px);line-height:1.4;margin:12px 0 0}
+.pinned-rating{min-width:0}
+.pinned-rating .rating-widget{padding:20px 16px;border-top:6px solid var(--acid);margin:0}
+.pinned-rating .rating-widget h2{font-size:clamp(29px,2.8vw,48px);line-height:1.08;margin-top:22px}
+.pinned-rating .rating-intro{font-size:19px;line-height:1.3}
+.pinned-rating .ranking-row{padding:15px 0;gap:8px}
+.pinned-rating .book-logo{max-width:112px;width:100%;height:34px}
+.pinned-rating .ranking-score{font-size:23px}
+.pinned-rating .rating-kicker{font-size:10px}
+.pinned-rating .source-note{font-size:11px;line-height:1.45}
+.pinned-rating .editorial-link{font-size:13px}
+.live-feed-heading{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding-top:20px;border-top:2px solid var(--ink);margin-bottom:28px}
+.live-feed-heading h2{font:600 clamp(28px,3vw,44px)/1.1 var(--display);margin:0;letter-spacing:-.03em}
+.live-feed-heading>span{font-size:13px;color:var(--muted)}
+/* Быстрое последовательное наложение вырезок с бумажной кромкой. */
+.cover-collage .collage-layer{position:absolute;inset:0;display:block;width:100%;height:100%;background:#ecdfc7;clip-path:var(--paper-edge);animation:collage-build 6.6s cubic-bezier(.2,.75,.25,1) infinite both;opacity:0;will-change:opacity,transform}
+.cover-collage .collage-layer img{width:100%;height:100%;object-fit:cover;clip-path:var(--paper-edge);transform:scale(.976);object-position:var(--photo-position,50% 50%)}
+.cover-collage .collage-layer-one{--arrive-x:-22%;--arrive-y:12%;--arrive-angle:-11deg;--leave-x:15%;--leave-y:-9%;--photo-position:52% 50%;--paper-edge:polygon(0 33%,8% 31%,10% 33%,18% 27%,21% 28%,29% 23%,33% 25%,42% 20%,46% 21%,55% 15%,60% 17%,70% 12%,74% 13%,83% 7%,89% 8%,100% 3%,100% 76%,93% 77%,90% 80%,82% 79%,76% 84%,68% 82%,61% 88%,52% 87%,46% 91%,36% 90%,28% 95%,19% 93%,12% 98%,0 100%);animation-delay:0s}
+.cover-collage .collage-layer-two{--arrive-x:18%;--arrive-y:-16%;--arrive-angle:9deg;--leave-x:-12%;--leave-y:7%;--paper-edge:polygon(37% 0,100% 0,100% 100%,82% 95%,77% 96%,68% 91%,65% 93%,55% 89%,51% 91%,41% 86%,35% 88%,24% 84%,14% 85%,17% 75%,15% 70%,21% 62%,18% 57%,25% 48%,23% 43%,29% 34%,27% 29%,33% 21%,31% 15%,37% 7%);animation-delay:1.1s}
+.cover-collage .collage-layer-three{--arrive-x:-16%;--arrive-y:-8%;--arrive-angle:-8deg;--leave-x:12%;--leave-y:10%;--photo-position:62% 50%;--paper-edge:polygon(0 0,44% 0,43% 8%,48% 15%,46% 21%,50% 27%,48% 32%,53% 40%,51% 47%,57% 53%,54% 59%,59% 66%,57% 72%,63% 80%,61% 85%,67% 94%,65% 100%,0 100%);animation-delay:2.2s}
+@keyframes collage-build{0%,2%{opacity:0;transform:translate(var(--arrive-x),var(--arrive-y)) rotate(var(--arrive-angle)) scale(1.12)}7%{opacity:1;transform:translate(-1%,1%) rotate(-1deg) scale(1.02)}11%,57%{opacity:1;transform:translate(0,0) rotate(0) scale(1)}64%,100%{opacity:0;transform:translate(var(--leave-x),var(--leave-y)) rotate(5deg) scale(1.05)}}
+.collage-pause{margin-top:16px;padding:4px 0;border:0;border-bottom:1px solid currentColor;background:transparent;font:inherit;font-size:11px;color:var(--muted);cursor:pointer}
+.collage-is-paused .collage-layer{animation-play-state:paused}
+.pinned-story a:focus-visible,.collage-pause:focus-visible{outline:2px solid var(--ink);outline-offset:5px}
+@media(min-width:1800px){.pinned-opening{grid-template-columns:repeat(2,minmax(0,1fr)) minmax(290px,.94fr)}}
+@media(max-width:1000px){.pinned-opening{grid-template-columns:repeat(2,minmax(0,1fr));gap:36px 28px}.pinned-rating{grid-column:2;grid-row:1 / span 2}.pinned-story-1{grid-column:1}.pinned-story-2{grid-column:1}.pinned-rating .rating-widget{position:sticky;top:24px}.pinned-story h2{font-size:clamp(36px,12cqi,66px)}}
+@media(max-width:650px){.pinned-opening{grid-template-columns:1fr;gap:40px;margin-top:26px;margin-bottom:40px}.pinned-story-1,.pinned-story-2,.pinned-rating{grid-column:auto;grid-row:auto}.pinned-rating .rating-widget{position:static}.pinned-story h2{font-size:clamp(38px,13.5cqi,66px)}.pinned-story-2 .pinned-photo{aspect-ratio:3/4}.pinned-rating .rating-widget h2{font-size:42px}}
+@media(prefers-reduced-motion:reduce){.cover-collage .collage-layer{animation:none;opacity:0;will-change:auto}.collage-pause{display:none}}
+
+/* Арочная обложка лежит прямо на бумаге страницы; свет — отдельный слой. */
+.pinned-story-stadium,.pinned-story-stadium h2,.stadium-cover{background:transparent}
+.pinned-story-stadium .pinned-art{overflow:visible}
+.stadium-cover{position:relative;margin:8px 0 0}
+.stadium-stamp{display:block;width:100%;height:auto;overflow:visible}
+.stadium-pulse{animation:stadium-ignite 7.2s ease-in-out infinite both;animation-delay:var(--light-delay);opacity:.06}
+.stadium-is-paused .stadium-pulse{animation-play-state:paused}
+@keyframes stadium-ignite{0%,12%,88%,100%{opacity:.06}30%,60%{opacity:1}76%{opacity:.25}}
+.stadium-pause{margin-top:16px;padding:4px 0;border:0;border-bottom:1px solid currentColor;background:transparent;font:inherit;font-size:11px;color:var(--muted);cursor:pointer}
+.stadium-pause:focus-visible{outline:2px solid var(--ink);outline-offset:5px}
+.article-image-stadium{max-width:680px}
+.article-image-stadium img{width:100%;height:auto;aspect-ratio:auto;object-fit:contain;background:transparent}
+@media(prefers-reduced-motion:reduce){.stadium-pulse{animation:none;opacity:.45}.stadium-beam{opacity:.15}.stadium-pause{display:none}}

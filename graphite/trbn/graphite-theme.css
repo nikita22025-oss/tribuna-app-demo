@@ -301,3 +301,23 @@ img.g-img-failed { background: linear-gradient(135deg, #1B1D19, #2b3026 55%, #1B
 img[src*="/leon."], img[src*="/pari."], image[href*="/pari."] { filter: invert(1) hue-rotate(180deg); }
 
 .match-card[hidden] { display: none; }
+
+/* ===== Версия 2 (12.10.2026): шапка одного цвета =====
+   Отзыв руководства: без отдельной лаймовой плашки с логотипом внутри тёмной шапки и без составных плашек.
+   Вся шапка — сплошной фирменный лайм, как на самом trbn.ru; чёрный логотип с красной короной лежит прямо
+   на ней (у файла логотипа тот же лайм, поэтому прямоугольника не видно). Раскладка и размеры не менялись. */
+.site-header, .site-header.classic-masthead, .site-header.masthead-refresh {
+  --ink: #1B1D19; --muted: rgba(27,29,25,.74); --line: rgba(27,29,25,.22); --orange: #3a4407; color: var(--ink); }
+.site-header.classic-masthead, .site-header.classic-masthead.is-article {
+  background: #E6FF57; -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: none; }
+.site-header .classic-brand-strip, .site-header .classic-nav, .site-header .classic-topics, .site-header .classic-services { background: transparent; box-shadow: none; }
+.site-header .classic-nav { border-color: var(--line); }
+.site-header .classic-nav a, .site-header .menu-toggle, .site-header .classic-services a { color: #1B1D19; background: transparent; border-radius: 0; box-shadow: none; }
+.site-header .classic-nav a:hover, .site-header .menu-toggle:hover { background: transparent; text-decoration: underline; text-underline-offset: 6px; }
+.site-header .classic-services small { color: rgba(27,29,25,.7); }
+.site-header .menu-grid-icon i { background-color: #1B1D19; }
+.site-header .classic-search svg { stroke: #1B1D19; }
+.site-header a:focus-visible, .site-header button:focus-visible { outline: 2px solid #1B1D19; outline-offset: 3px; }
+/* выпадающий список тем остаётся графитовым листом под шапкой, со светлым текстом */
+.classic-masthead .topic-directory { --ink: #F2F3EE; --muted: rgba(242,243,238,.72); --line: rgba(242,243,238,.14); --orange: #E6FF57; color: #F2F3EE; background-color: var(--g-solid); }
+.classic-masthead .topic-directory a { color: #F2F3EE; }

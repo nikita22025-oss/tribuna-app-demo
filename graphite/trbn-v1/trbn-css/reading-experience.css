@@ -1,0 +1,45 @@
+/* Shared reading scale; the homepage order and magazine colours stay intact. */
+.reading-search,.reading-format{padding-bottom:64px}
+.reading-filters{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0 36px}
+.reading-filters a{display:flex;align-items:center;gap:12px;min-height:44px;padding:10px 16px;border:1px solid var(--line);font-size:14px}
+.reading-filters a[aria-current]{background:var(--ink);color:var(--paper)}
+.reading-filters span{font-size:12px;opacity:.7}
+.reading-results{max-width:950px}
+.reading-result{padding:25px 0 28px;border-top:1px solid var(--line)}
+.reading-result-meta{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;font:13px/1.5 var(--font);color:var(--muted)}
+.reading-result h2{font:400 clamp(25px,2.6vw,36px)/1.15 var(--serif);letter-spacing:-.025em;margin:14px 0 12px}
+.reading-result h2 a:hover{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+.reading-result p{font:16px/1.6 var(--font);max-width:75ch;margin:0}
+.reading-source{font:13px/1.5 var(--font);color:var(--muted);margin-top:12px}
+.reading-source a,.reading-original a{text-decoration:underline;text-underline-offset:3px}
+.reading-archive-article .meta{flex-wrap:wrap;gap:8px 24px}
+.reading-archive-nav{padding-block:28px;margin-top:32px}
+.reading-match{padding-bottom:80px}.reading-match .odds-strip{max-width:650px;margin-block:20px}
+.reading-match .category-header h1{font-size:clamp(36px,6vw,80px);overflow-wrap:anywhere}
+.reading-match .category-header time{display:inline}
+.journal-article figcaption,.journal-article .jf-photo figcaption,.journal-article .jr-details-grid figcaption{font-size:14px;line-height:1.5}
+.journal-article .jf-photo figcaption>span+span{font-size:13px;margin-top:6px}
+.journal-article.jf-nadal .jf-hero-photo figcaption,.jf-nadal-interlude .jf-photo figcaption{color:#f6f5ed;opacity:.9}
+.journal-article .jr-prose .jf-chapter-sources{font-size:13px;line-height:1.6}
+.jf-nadal .jf-hero-inner{padding-block:32px}
+.jf-nadal .jf-hero-copy{padding-block:0}
+.jf-nadal .jf-kicker{margin-bottom:22px}
+.jf-nadal .jf-hero h1{font-size:clamp(54px,5.4vw,100px);margin-bottom:22px}
+.jf-nadal .jf-deck{max-width:34ch;font-size:clamp(22px,1.9vw,29px)}
+.jf-nadal .jf-hero-photo .jr-photo{min-height:400px}
+.jf-ritual-note{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);align-items:center;gap:6%;max-width:830px;margin:36px auto 0;padding:24px 0;border-block:1px solid var(--line)}
+.jf-ritual-note img{display:block;width:100%;height:auto}
+.journal-article .jf-ritual-note figcaption{display:block;color:var(--ink);margin:0}
+.jf-ritual-note strong{font:400 clamp(26px,2.5vw,34px)/1.2 var(--serif)}
+.jf-ritual-note p{font:16px/1.6 var(--font);margin:16px 0 12px;max-width:38ch}
+.jf-ritual-note figcaption>span{font:13px/1.5 var(--font);color:var(--muted)}
+@media(max-width:650px){
+ .reading-result-meta{font-size:12px}.reading-result p{font-size:15px}
+ .reading-filters{gap:6px}.reading-filters a{font-size:12px;padding-inline:12px}
+ .journal-article figcaption,.journal-article .jf-photo figcaption,.journal-article .jr-details-grid figcaption{font-size:13px}
+ .jf-nadal .jf-hero h1{font-size:clamp(48px,10.5vw,72px)}
+ .jf-nadal .jf-hero-photo .jr-photo{min-height:0}
+ .jf-ritual-note{gap:0;display:block;padding-block:12px 24px}
+ .jf-ritual-note img{max-width:300px;margin:auto}
+ .jf-ritual-note p{font-size:15px}
+}
