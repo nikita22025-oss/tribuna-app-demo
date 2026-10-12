@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#11130F">
+<title>Журнал — Трибуна, демо приложения · Графит</title>
+<meta name="description" content="Демо мобильного приложения «Трибуна» в тёмном стиле: журнал, новости, матчи, рейтинг букмекеров и раздел прогнозов. 18+">
+<script>document.documentElement.classList.add('js');</script>
+<link rel="stylesheet" href="app.css">
+<link rel="stylesheet" href="rating.css">
+</head>
+<body>
+<canvas class="graphite-bg" aria-hidden="true"></canvas>
+<div class="veil" aria-hidden="true"></div>
+
+<div class="app" id="app">
+  <header class="top">
+    <a class="logo" href="#journal" aria-label="Трибуна, открыть журнал"><img src="tribuna-logo.svg" width="184" height="54" alt="Трибуна"></a>
+    <div class="top-side">
+      <span class="age" title="Материалы для совершеннолетних">18+</span>
+      <a class="round" href="#about" aria-label="О приложении и вход">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.6"/><path d="M4.8 20c.9-3.6 3.7-5.4 7.200-5.400s6.300 1.800 7.200 5.400"/></svg>
+      </a>
+    </div>
+  </header>
+
+  <main class="view" id="view">
+
+    <section class="screen" id="s-journal" role="tabpanel" aria-labelledby="tab-journal">
+      <header class="head">
+        <p class="kicker">01 / Журнал</p>
+        <h1 tabindex="-1">Истории <em>за пределами счёта.</em></h1>
+      </header>
+      <div class="tools" id="j-tools" hidden>
+        <div id="j-search"></div>
+        <div class="tabs" id="j-tabs" role="tablist" aria-label="Темы журнала"></div>
+        <p class="count" id="j-count" aria-live="polite"></p>
+      </div>
+      <div class="body" id="j-body"></div>
+    </section>
+
+    <section class="screen" id="s-news" role="tabpanel" aria-labelledby="tab-news" hidden>
+      <header class="head">
+        <p class="kicker">02 / Новости</p>
+        <h1 tabindex="-1">Лента <em>с источником.</em></h1>
+      </header>
+      <div class="tools" id="n-tools" hidden>
+        <div id="n-search"></div>
+        <div class="tabs" id="n-tabs" role="tablist" aria-label="Рубрики новостей"></div>
+        <p class="count" id="n-count" aria-live="polite"></p>
+      </div>
+      <div class="body" id="n-body"></div>
+    </section>
+
+    <section class="screen" id="s-matches" role="tabpanel" aria-labelledby="tab-matches" hidden>
+      <header class="head">
+        <p class="kicker">03 / Матчи</p>
+        <h1 tabindex="-1">Расписание <em>по Москве.</em></h1>
+      </header>
+      <div class="tools" id="m-tools" hidden>
+        <div id="m-search"></div>
+        <div class="tabs" id="m-tabs" role="tablist" aria-label="День"></div>
+        <div class="chips" id="m-sports" role="group" aria-label="Вид спорта"></div>
+        <p class="count" id="m-count" aria-live="polite"></p>
+      </div>
+      <div class="body" id="m-body"></div>
+    </section>
+
+    <section class="screen screen-rating" id="s-rating" role="tabpanel" aria-labelledby="tab-rating" hidden>
+      <div id="live-rating" data-logos="../logos/"></div>
+    </section>
+
+    <section class="screen" id="s-forecasts" role="tabpanel" aria-labelledby="tab-forecasts" hidden>
+      <header class="head">
+        <p class="kicker">05 / Прогнозы</p>
+        <h1 tabindex="-1">Модель <em>готовится.</em></h1>
+      </header>
+      <div class="body">
+        <article class="glass blur stub">
+          <p class="num">0</p>
+          <h2>Опубликованных прогнозов нет</h2>
+          <p>Здесь будет собственная модель «Трибуны». Она ещё готовится, поэтому раздел пуст: ни прогнозов, ни вероятностей, ни обещаний точности.</p>
+          <ul class="pills"><li>В подготовке</li><li>Прогнозов пока нет</li><li>18+</li></ul>
+        </article>
+        <article class="glass note-card">
+          <h2>Что уже работает</h2>
+          <p>Расписание встреч и каталог условий букмекеров открыты в соседних разделах. Это справочные данные, а не прогноз.</p>
+          <div class="row-btns">
+            <a class="btn ghost" href="#matches">Матчи</a>
+            <a class="btn ghost" href="#rating">Рейтинг</a>
+          </div>
+        </article>
+        <p class="legal"><b>18+</b> Трибуна не принимает ставки.</p>
+      </div>
+    </section>
+
+    <section class="screen" id="s-article" aria-labelledby="a-title" hidden>
+      <div class="back-row"><button class="back" type="button" data-back="journal"><span aria-hidden="true">←</span> Журнал</button></div>
+      <article class="article" id="a-body"></article>
+    </section>
+
+    <section class="screen" id="s-about" aria-labelledby="ab-title" hidden>
+      <div class="back-row"><button class="back" type="button" data-back="journal"><span aria-hidden="true">←</span> Назад</button></div>
+      <header class="head">
+        <p class="kicker">Мобильное приложение · рабочая версия</p>
+        <h1 id="ab-title" tabindex="-1">Спорт за пределами <em>счёта.</em></h1>
+        <p class="lead">Журнал, новости, матчи, рейтинг букмекеров и раздел прогнозов — пять разделов в одном приложении.</p>
+      </header>
+      <div class="body">
+        <article class="glass blur">
+          <h2>Аккаунт</h2>
+          <p>Учётные записи пока не подключены. Экран входа можно посмотреть, но он ничего не отправляет и не сохраняет.</p>
+          <div class="row-btns">
+            <a class="btn" href="#auth?mode=login">Войти</a>
+            <a class="btn ghost" href="#auth?mode=register">Создать аккаунт</a>
+          </div>
+        </article>
+        <article class="glass">
+          <h2>Что в этой версии</h2>
+          <dl class="facts" id="ab-facts"><div><dt>Данные</dt><dd>Загружаются…</dd></div></dl>
+          <p class="small" id="ab-stamp"></p>
+        </article>
+        <article class="glass">
+          <h2>Статус</h2>
+          <p>Рабочая версия для команды, в магазинах приложений «Трибуны» пока нет. Эта страница — демонстрация экранов в браузере: содержимое берётся из того же файла данных, что показывает приложение.</p>
+        </article>
+        <p class="legal"><b>18+</b> Трибуна не принимает ставки. Раздел «Рейтинг» носит информационный характер.</p>
+      </div>
+    </section>
+
+    <section class="screen" id="s-auth" aria-labelledby="au-title" hidden>
+      <div class="back-row"><button class="back" type="button" data-back="about"><span aria-hidden="true">←</span> О приложении</button>
+        <span class="demo-pill">Демо · данные не отправляются</span></div>
+      <h1 class="sr" id="au-title" tabindex="-1">Вход и регистрация</h1>
+      <div class="panel" id="panel" data-mode="login">
+        <section class="zone greet" aria-live="off">
+          <div class="face for-register">
+            <h2>С возвращением!</h2>
+            <p>Уже есть аккаунт? Откройте форму входа.</p>
+            <button class="ghost-btn" type="button" data-go="login">Войти →</button>
+          </div>
+          <div class="face for-login">
+            <h2>Привет, болельщик!</h2>
+            <p>Ещё не с нами? Форма регистрации — пара полей.</p>
+            <button class="ghost-btn" type="button" data-go="register">Создать аккаунт →</button>
+          </div>
+        </section>
+        <section class="zone forms">
+          <form class="face for-register" id="register" novalidate autocomplete="off">
+            <h2 class="form-title">Создать аккаунт</h2>
+            <div class="f"><label for="r-name">Имя</label><div class="in"><input id="r-name" name="name" type="text" autocomplete="name" placeholder="Как к вам обращаться" aria-describedby="e-r-name"></div><p class="err" id="e-r-name" role="alert"></p></div>
+            <div class="f"><label for="r-email">Почта</label><div class="in"><input id="r-email" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="name@example.ru" aria-describedby="e-r-email"></div><p class="err" id="e-r-email" role="alert"></p></div>
+            <div class="f"><label for="r-pass">Пароль</label><div class="in pw"><input id="r-pass" name="new-password" type="password" autocomplete="new-password" placeholder="Не короче 8 символов" aria-describedby="e-r-pass"><button class="eye" type="button" aria-controls="r-pass" aria-pressed="false">Показать</button></div><p class="err" id="e-r-pass" role="alert"></p></div>
+            <label class="check"><input id="r-age" type="checkbox" aria-describedby="e-r-age"><span>Мне исполнилось 18 лет</span></label><p class="err" id="e-r-age" role="alert"></p>
+            <button class="go" type="submit">Зарегистрироваться</button>
+            <p class="result" id="res-register" role="status" hidden></p>
+          </form>
+          <form class="face for-login" id="login" novalidate autocomplete="off">
+            <h2 class="form-title">Вход</h2>
+            <div class="f"><label for="l-email">Почта</label><div class="in"><input id="l-email" name="email" type="email" inputmode="email" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="name@example.ru" aria-describedby="e-l-email"></div><p class="err" id="e-l-email" role="alert"></p></div>
+            <div class="f"><label for="l-pass">Пароль</label><div class="in pw"><input id="l-pass" name="password" type="password" autocomplete="current-password" placeholder="Ваш пароль" aria-describedby="e-l-pass"><button class="eye" type="button" aria-controls="l-pass" aria-pressed="false">Показать</button></div><p class="err" id="e-l-pass" role="alert"></p></div>
+            <button class="go" type="submit">Войти</button>
+            <p class="result" id="res-login" role="status" hidden></p>
+          </form>
+        </section>
+      </div>
+      <p class="legal center">Введённое остаётся в этой вкладке: никуда не отправляется и не сохраняется, аккаунты не создаются.</p>
+    </section>
+
+    <noscript><p class="noscript">Для демо приложения нужен JavaScript.</p></noscript>
+  </main>
+
+  <div class="dock" id="dock">
+    <nav class="capsule" id="capsule" role="tablist" aria-label="Разделы">
+      <svg class="wave" id="wave-svg" height="64" aria-hidden="true">
+        <defs><linearGradient id="waveGlow" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#E6FF57" stop-opacity=".2"/><stop offset="1" stop-color="#E6FF57" stop-opacity="0"/></linearGradient></defs>
+        <path id="wave-glow" fill="url(#waveGlow)"/>
+        <path id="wave-line" fill="none" stroke="#E6FF57" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </nav>
+  </div>
+
+  <div class="fatal" id="fatal" role="alert" hidden>
+    <p>Часть экрана не загрузилась.</p>
+    <button type="button" id="fatal-reload">Обновить страницу</button>
+  </div>
+</div>
+
+<script src="graphite-bg.js"></script>
+<script src="ui.js"></script>
+<script src="rating.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
