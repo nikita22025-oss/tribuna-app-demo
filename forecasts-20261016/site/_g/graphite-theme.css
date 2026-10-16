@@ -1,0 +1,328 @@
+/* «Графит» поверх действующего trbn.ru.
+   Этот файл подключается ПОСЛЕДНИМ и меняет только оформление: фон, цвета текста, поверхности,
+   линии, тени, акценты. Раскладка (сетки, размеры, отступы, брейкпоинты) — из таблиц стилей сайта в trbn-css/. */
+
+/* ===== 1. Палитра и фон ===== */
+:root {
+  --paper: #F2F3EE;                 /* «бумага»: теперь это цвет текста на тёмных плашках */
+  --ink: #F2F3EE;                   /* основной текст и сильные линии */
+  --acid: #E6FF57;
+  --orange: #E6FF57;                /* на сайте — цвет наведения; здесь лайм */
+  --muted: rgba(242,243,238,.72);
+  --line: rgba(242,243,238,.14);
+  --fa-paper: rgba(27,29,25,.94); --fa-ink: #F2F3EE; --fa-red: #ff6a5e;
+  --journal-line: rgba(242,243,238,.14); --pj-line: rgba(242,243,238,.14);
+  --g-night: #11130F; --g-ink: #1B1D19; --g-paper: #F2F3EE;
+  --g-page: transparent;            /* бывшая «бумага» страницы: сквозь неё видна фактура */
+  --g-glass: rgba(27,29,25,.62);    /* бывшие белые карточки */
+  --g-tint: rgba(242,243,238,.06);  /* бывшие светло-серые подложки */
+  --g-plate: rgba(242,243,238,.09); /* бывшие чёрные плашки */
+  --g-solid: #151713;               /* непрозрачный графит там, где слой обязан закрывать нижний */
+  --g-shadow: rgba(0,0,0,.45);
+  color-scheme: dark;
+}
+html { background: var(--g-night); }
+body { background: transparent; color: var(--ink); }
+.graphite-bg { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+.veil { position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(90deg, rgba(17,19,15,.55) 0%, rgba(17,19,15,.22) 55%, rgba(17,19,15,0) 100%); }
+::selection { background: var(--acid); color: #1B1D19; }
+:focus-visible { outline-color: var(--acid); }
+
+/* ===== 2. Цвета, пересчитанные из правил сайта (собрано автоматически, только цветовые свойства) ===== */
+
+/* —— из styles.css —— */
+body{background-color:var(--g-page)}
+::selection{--ink:#1B1D19;--muted:rgba(27,29,25,.74);--line:rgba(27,29,25,.3);--orange:#3a4407}
+.skip-link{background-color:var(--g-plate)}
+.site-header{--ink:#1B1D19;--muted:rgba(27,29,25,.74);--line:rgba(27,29,25,.3);--orange:#3a4407;color:var(--ink)}
+.menu-toggle:hover{background-color:var(--g-plate)}
+.leaderboard{background-color:var(--g-plate)}
+.rubric-line:hover{color:hsl(68 70% 70%)}
+.side-ad{background-color:var(--g-plate)}
+.native-ad h2 em{--ink:#1B1D19;--muted:rgba(27,29,25,.74);--line:rgba(27,29,25,.3);--orange:#3a4407;color:var(--ink)}
+.site-footer{--ink:#1B1D19;--muted:rgba(27,29,25,.74);--line:rgba(27,29,25,.3);--orange:#3a4407;color:var(--ink)}
+.category{color:hsl(68 58% 70%)}
+.story-card .image-link .tag{background-color:var(--g-page)}
+.story-card p{color:var(--muted)}
+.topic-directory{background-color:var(--g-plate)}
+.lead-form{background-color:var(--g-glass)}
+.lead-form input[type=text],.lead-form input[type=email],.lead-form select,.lead-form textarea{background-color:var(--g-page)}
+.lead-form [aria-invalid=true]{background-color:var(--g-tint)}
+.lead-error{color:hsl(0 55% 70%)}
+.lead-submit{background-color:var(--g-plate)}
+.lead-submit:hover{background-color:var(--g-plate)}
+.chip:hover,.chip.is-active{background-color:var(--g-plate)}
+.inline-link{background-color:var(--g-glass)}
+.topic-search input,.search-form input{background-color:var(--g-page)}
+.topic-search button,.search-form button{background-color:var(--g-plate)}
+
+/* —— из sports.css —— */
+.sport-filters button[aria-pressed=true]{background-color:var(--g-plate)}
+.match-card{background-color:var(--g-glass)}
+.match-teams>div>span:last-child{color:var(--muted)}
+.match-market{border-top-color:var(--line)}
+.odds-strip>span{background-color:var(--g-tint)}
+.module-empty{background-color:var(--g-glass)}
+.rating-widget{background-color:var(--g-glass)}
+.ranking-row:hover{background-color:var(--g-tint)}
+.date-filters button[aria-pressed=true]{--ink:#1B1D19;--muted:rgba(27,29,25,.74);--line:rgba(27,29,25,.3);--orange:#3a4407;color:var(--ink)}
+.match-hero{background-color:var(--g-plate)}
+.demo-callout{background-color:var(--g-tint)}
+.odds-table{background-color:var(--g-glass)}
+.odds-table thead{background-color:var(--g-plate)}
+.odds-table tbody tr:hover{background-color:var(--g-tint)}
+.rating-toolbar button[aria-pressed=true]{background-color:var(--g-plate)}
+.ranking-head{background-color:var(--g-plate)}
+.ranking-full .ranking-row{background-color:var(--g-glass)}
+.ranking-full .ranking-row:hover{background-color:var(--g-tint)}
+.book-detail-top{background-color:var(--g-glass)}
+.criteria-grid meter{background-color:var(--g-tint)}
+.criteria-grid meter::-webkit-meter-bar{background-color:var(--g-tint)}
+.criteria-grid meter::-webkit-meter-optimum-value{background-color:var(--g-plate)}
+.criteria-grid meter::-moz-meter-bar{background-color:var(--g-plate)}
+.source-callout{background-color:var(--g-glass)}
+.book-scores>div{background-color:var(--g-glass)}
+.book-scores meter{background-color:var(--g-tint)}
+.book-scores meter::-webkit-meter-bar{background-color:var(--g-tint)}
+.book-scores meter::-webkit-meter-optimum-value{background-color:var(--g-plate)}
+.book-scores meter::-moz-meter-bar{background-color:var(--g-plate)}
+.book-pros li::before{color:hsl(91 66% 70%)}
+.book-cons li::before{color:hsl(0 55% 70%)}
+.book-site-link{background-color:var(--g-plate)}
+.book-site-link:hover{background-color:var(--g-plate)}
+.book-ranks li:hover{background-color:var(--g-plate)}
+.book-strip a{background-color:var(--g-glass)}
+
+/* —— из editorial.css —— */
+.format-cover-link{background-color:var(--g-plate)}
+.poster-acid{--ink:#1B1D19;--muted:rgba(27,29,25,.74);--line:rgba(27,29,25,.3);--orange:#3a4407;color:var(--ink)}
+.poster-ink{background-color:var(--g-plate)}
+.special-section{background-color:var(--g-page)}
+.special-controls{background-color:var(--g-page)}
+.special-controls button{background-color:var(--g-plate)}
+.special-controls button:hover{--ink:#1B1D19;--muted:rgba(27,29,25,.74);--line:rgba(27,29,25,.3);--orange:#3a4407}
+.special-artwork{background-color:var(--g-plate)}
+.special-artwork-index{--ink:#1B1D19;--muted:rgba(27,29,25,.74);--line:rgba(27,29,25,.3);--orange:#3a4407}
+
+/* —— из live-fixes.css —— */
+.format-feature-image img,
+.format-cover-link > img{background-color:var(--g-tint)}
+.live-ad .ad-head{border-bottom-color:var(--ink)}
+.live-ad-cta{border-bottom-color:var(--ink)}
+.live-ad-wide .live-ad-media{background-color:var(--g-tint)}
+.winline-offer{background-color:var(--g-plate)}
+.winline-offer .winline-offer-art{background-color:var(--g-plate)}
+.winline-offer .winline-offer-copy{--ink:#1B1D19;--muted:rgba(27,29,25,.74);--line:rgba(27,29,25,.3);--orange:#3a4407}
+.winline-offer-scale > i{background-color:var(--g-plate)}
+.winline-offer-cta{background-color:var(--g-plate)}
+.winline-offer-cta:focus-visible, .winline-offer-details :focus-visible{outline-color:var(--ink)}
+@media (min-width: 1101px){.winline-offer-terms{background-color:var(--g-tint);border-color:var(--ink)}
+}
+.pinned-photo,.cover-collage{background-color:var(--g-plate)}
+.cover-collage .collage-layer{--ink:#1B1D19;--muted:rgba(27,29,25,.74);--line:rgba(27,29,25,.3);--orange:#3a4407;color:var(--ink)}
+
+/* —— из masthead.css —— */
+.site-header.masthead-refresh{--ink:#1B1D19;--muted:rgba(27,29,25,.74);--line:rgba(27,29,25,.3);--orange:#3a4407;color:var(--ink)}
+
+/* —— из journal.css —— */
+.journal-article{--journal-line:var(--line)}
+.jr-photo>span{background-color:var(--g-page)}
+.jr-details-grid figure{--ink:#1B1D19;--muted:rgba(27,29,25,.74);--line:rgba(27,29,25,.3);--orange:#3a4407;color:var(--ink);box-shadow:2px 4px 0 #37101e}
+.jr-details-grid figcaption{color:var(--muted)}
+.jr-lightbox{background-color:var(--g-plate)}
+.jr-lightbox::backdrop{background-color:var(--g-plate)}
+
+/* —— из journal-features.css —— */
+.jf-nadal-interlude{background-color:var(--g-plate)}
+.jf-wall .jf-hero{color:var(--ink)}
+.jf-wall .jf-chapter-title>span{color:hsl(47 70% 70%)}
+.jf-rucker .jf-hero-photo{background-color:var(--g-page)}
+
+/* —— из journal-art.css —— */
+.jp-plate{background-color:var(--g-tint)}
+.jp-photo-arrow{background-color:var(--g-tint);color:var(--ink)}
+.jp-nadal{background-color:var(--g-plate)}
+.jp-scarf{background-color:var(--g-plate)}
+.jp-wall{color:var(--ink)}
+.jp-rucker{--ink:#1B1D19;--muted:rgba(27,29,25,.74);--line:rgba(27,29,25,.3);--orange:#3a4407}
+.jp-jersey{background-color:var(--g-tint)}
+.jp-rondo-card{background-color:var(--g-tint);color:hsl(212 57% 70%)}
+.jp-related.jp-rondo .jp-photo img,.jp-related.jp-three .jp-photo img{background-color:var(--g-tint)}
+.jf-nadal .jf-hero-photo{--ink:#1B1D19;--muted:rgba(27,29,25,.74);--line:rgba(27,29,25,.3);--orange:#3a4407;color:var(--ink);box-shadow:9px 9px 0 #0c29224d}
+.jf-nadal .jf-hero-photo figcaption{color:var(--muted)}
+.jf-nadal-interlude .jf-photo{background-color:var(--g-tint);color:var(--ink)}
+.jf-nadal-interlude .jf-photo figcaption{color:var(--ink)}
+.jf-scarf .jf-hero{background-color:var(--g-tint);color:var(--ink)}
+.jf-scarf .jf-kicker{color:hsl(352 45% 70%)}
+.jf-scarf .jf-illustration{background-color:var(--g-plate);border-color:var(--ink)}
+.jf-scarf-detail h2{color:hsl(352 45% 70%)}
+.jf-point-result strong{color:hsl(238 48% 70%)}
+.jf-rondo .jf-hero{background-color:var(--g-tint);color:hsl(212 57% 70%)}
+.jf-rondo .jf-diagram figcaption{color:hsl(212 57% 70%)}
+.jf-rondo-explainer{background-color:var(--g-tint);color:hsl(212 57% 70%)}
+@media(max-width:650px){.jf-nadal .jf-hero-photo{box-shadow:6px 6px 0 #0c29224d}
+}
+
+/* —— из journal-pinned.css —— */
+.pj-article{--pj-red:hsl(5 61% 70%);--pj-blue:hsl(204 52% 70%);--pj-line:var(--line)}
+.pj-portrait .jr-photo{background-color:var(--g-tint)}
+.pj-stopwatch{background-color:var(--g-tint);color:hsl(203 57% 70%)}
+.pj-height{background-color:var(--g-tint);color:hsl(158 23% 70%)}
+.pj-belonging{--pj-red:hsl(204 47% 70%)}
+.pj-landscape{background-color:var(--g-tint)}
+.pj-fans-voice .pj-landscape{background-color:var(--g-plate)}
+.pj-fans-voice .pj-margin{color:hsl(10 57% 70%)}
+.pj-stay{background-color:var(--g-tint)}
+.pj-seat-rows{color:var(--muted)}
+.pj-stay>small{color:var(--muted)}
+.jp-yearbook .jp-photo img,.jp-belonging .jp-photo img{background-color:var(--g-page)}
+
+/* —— из editorial-sketches.css —— */
+.es-drawing{color:hsl(3 70% 70%)}
+.es-break-copy>a:hover{color:hsl(3 70% 70%)}
+
+/* —— из weekly-edition.css —— */
+.we-cover>a{background-color:var(--g-plate)}
+.we-graphic-cards{--ink:#1B1D19;--muted:rgba(27,29,25,.74);--line:rgba(27,29,25,.3);--orange:#3a4407;color:var(--ink)}
+.we-buttons button[aria-pressed=true]{background-color:var(--g-plate)}
+.we-court:before{--ink:#1B1D19;--muted:rgba(27,29,25,.74);--line:rgba(27,29,25,.3);--orange:#3a4407;color:var(--ink)}
+.we-tennis-ball{--ink:#1B1D19;--muted:rgba(27,29,25,.74);--line:rgba(27,29,25,.3);--orange:#3a4407;color:var(--ink)}
+[data-we-court=yellow] .we-tennis-ball{--ink:#1B1D19;--muted:rgba(27,29,25,.74);--line:rgba(27,29,25,.3);--orange:#3a4407;color:var(--ink)}
+.we-card-pair i{--ink:#1B1D19;--muted:rgba(27,29,25,.74);--line:rgba(27,29,25,.3);--orange:#3a4407;color:var(--ink)}
+
+/* —— из weekly-2026-10-07.css —— */
+.oc-card-clock{background-color:var(--g-plate)}
+.oc-card-pass{background-color:var(--g-tint)}
+.oc-sketch{color:hsl(3 70% 70%);stroke:hsl(3 70% 70%)}
+.oc-clock-panel{background-color:var(--g-plate)}
+.oc-rings>span{color:hsl(5 58% 70%)}
+.oc-rings i{background-color:var(--g-tint)}
+.oc-rings i:last-child{--ink:#1B1D19;--muted:rgba(27,29,25,.74);--line:rgba(27,29,25,.3);--orange:#3a4407;color:var(--ink)}
+.oc-rule{background-color:var(--g-tint)}
+.oc-rule button[aria-pressed=true]{background-color:var(--g-plate)}
+
+/* —— из bookmakers.css —— */
+.bk-title-dot{color:hsl(6 70% 70%)}
+.bk-tabs button[aria-pressed=true]{background-color:var(--g-plate)}
+.bk-compare-pick[aria-pressed=true]>span:first-child{--ink:#1B1D19;--muted:rgba(27,29,25,.74);--line:rgba(27,29,25,.3);--orange:#3a4407;color:var(--ink)}
+.bk-status i{background-color:var(--g-plate)}
+.bk-details-content{background-color:var(--g-tint)}
+.bk-button{background-color:var(--g-plate)}
+.bk-button:hover:enabled{background-color:var(--g-plate)}
+.bk-reading-guide{--ink:#1B1D19;--muted:rgba(27,29,25,.74);--line:rgba(27,29,25,.3);--orange:#3a4407;color:var(--ink)}
+.bk-light-button:hover:enabled{background-color:var(--g-page)}
+.bk-tray{background-color:var(--g-page);box-shadow:0 8px 28px #1b1d1922}
+.bk-toast{background-color:var(--g-plate)}
+.bk-comparison{background-color:var(--g-page)}
+.bk-offer-panel{--ink:#1B1D19;--muted:rgba(27,29,25,.74);--line:rgba(27,29,25,.3);--orange:#3a4407;color:var(--ink)}
+.bk-offer-winline{--ink:#1B1D19;--muted:rgba(27,29,25,.74);--line:rgba(27,29,25,.3);--orange:#3a4407;color:var(--ink)}
+.bk-offer-panel>a{background-color:var(--g-plate)}
+.bk-source-section{background-color:var(--g-tint)}
+.bk-row[data-bk-status=conflict] .bk-status,.bk-row[data-bk-status=blocked] .bk-status,.bk-row[data-bk-status=expired] .bk-status,.bk-row[data-bk-status=stale] .bk-status{color:hsl(27 70% 70%)}
+.bk-offer-panel[data-bk-status=conflict],.bk-offer-panel[data-bk-status=blocked],.bk-offer-panel[data-bk-status=none],.bk-offer-panel[data-bk-status=expired],.bk-offer-panel[data-bk-status=stale]{background-color:var(--g-tint)}
+@media(max-width:540px){.bk-comparison th:first-child{background-color:var(--g-page)}
+}
+.bk-directory .bk-offer-caution{color:hsl(27 70% 70%)}
+.bk-bonus-link{--ink:#1B1D19;--muted:rgba(27,29,25,.74);--line:rgba(27,29,25,.3);--orange:#3a4407}
+.bk-bonus-link:hover{background-color:var(--g-plate)}
+.bk-bonus-check{background-color:var(--g-tint)}
+.bk-directory .bk-row-details>summary:hover{color:hsl(69 65% 70%)}
+.bk-show-all{background-color:var(--g-plate)}
+.bk-show-all:hover{background-color:var(--g-plate)}
+.bk-partner-placeholder{background-color:var(--g-plate)}
+.bk-predictions-body{background-color:var(--g-tint)}
+.bk-sport-preview svg{stroke:var(--muted)}
+.bk-highlight{--ink:#1B1D19;--muted:rgba(27,29,25,.74);--line:rgba(27,29,25,.3);--orange:#3a4407}
+.bk-highlight svg{color:hsl(3 70% 70%)}
+.bk-highlight-copy small{color:hsl(56 18% 70%)}
+.bk-amount-card{background-color:var(--g-tint)}
+.bk-offer-badge{background-color:var(--g-plate)}
+.bk-offer-badge-exclusive{--ink:#1B1D19;--muted:rgba(27,29,25,.74);--line:rgba(27,29,25,.3);--orange:#3a4407;box-shadow:inset 0 -2px #e62f24}
+
+/* —— из compact-footer.css —— */
+.site-footer.compact-footer{background-color:var(--g-tint)}
+.compact-footer-age{color:var(--muted)}
+.compact-footer-notes{color:var(--muted)}
+.compact-footer-copy{color:var(--muted)}
+.compact-footer .footer-rubrics{background-color:var(--g-tint)}
+
+/* —— из ad-management.css —— */
+.ad-managed-offer .winline-offer-copy{background-color:var(--g-page)}
+
+/* —— из classic-masthead.css —— */
+.site-header.classic-masthead{--ink:#1B1D19;--muted:rgba(27,29,25,.74);--line:rgba(27,29,25,.3);--orange:#3a4407}
+.site-header.classic-masthead.is-article{background-color:var(--g-page)}
+
+/* —— из reading-experience.css —— */
+.reading-filters a[aria-current]{background-color:var(--g-plate)}
+
+/* —— из floating-ad.css —— */
+.floating-ad{background-color:var(--g-page);color:var(--ink);box-shadow:0 6px 24px #1b1d1926}
+.floating-ad-link{background-color:var(--g-page)}
+.floating-ad-brand>span{color:var(--muted)}
+.floating-ad-cta{--ink:#1B1D19;--muted:rgba(27,29,25,.74);--line:rgba(27,29,25,.3);--orange:#3a4407}
+.floating-ad-link:hover .floating-ad-cta{background-color:var(--g-plate)}
+.floating-ad-close{background-color:var(--g-plate);box-shadow:0 2px 8px #0002}
+.floating-ad-legal{color:var(--muted)}
+
+
+/* ===== 3. Ручная доводка ===== */
+/* логотип: файл tribuna-logo.svg в коробке с пропорциями прежнего словесного знака — высота шапки не меняется */
+.g-logo-box { display: block; width: 100%; aspect-ratio: 1465 / 310; }
+.g-logo { display: block; height: 100%; width: auto; max-width: 100%; }
+.g-demo-note { margin: 14px 0 0; font-size: 11px; line-height: 1.4; color: rgba(242,243,238,.45); }
+.g-form-note { display: block; margin-top: 6px; font-size: 12px; color: var(--acid); }
+/* запасной фон, если картинка с trbn.ru не загрузилась */
+img.g-img-failed { background: linear-gradient(135deg, #1B1D19, #2b3026 55%, #1B1D19); color: rgba(242,243,238,.6); font-size: 12px; }
+
+/* шапка и подвал: на сайте лаймовая и серая плиты — здесь графитовое стекло, лаймовым остаётся логотип */
+.site-header, .site-header.classic-masthead, .site-header.masthead-refresh, .site-footer, .site-footer.compact-footer {
+  --ink: #F2F3EE; --muted: rgba(242,243,238,.72); --line: rgba(242,243,238,.14); --orange: #E6FF57; color: var(--ink); }
+.site-header.classic-masthead, .site-header.classic-masthead.is-article {
+  background: rgba(17,19,15,.72); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: inset 0 -1px 0 var(--line); }
+.site-footer.compact-footer { background: rgba(17,19,15,.72); border-top-color: var(--line); }
+.compact-footer-meta { border-top-color: var(--line); }
+.compact-footer .footer-rubrics { background: var(--g-solid); border-color: var(--line); }
+.classic-masthead .topic-directory { background-color: var(--g-solid); }
+
+/* слои, которые обязаны закрывать то, что под ними */
+.special-section, .special-controls { background-color: var(--g-solid); }
+.floating-ad { background-color: rgba(21,23,19,.96); box-shadow: 0 10px 34px rgba(0,0,0,.55), inset 0 0 0 1px var(--line); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+.floating-ad-link { background-color: transparent; }
+.floating-ad-close { background-color: #F2F3EE; color: #1B1D19; }
+
+/* выбранная вкладка — лайм вместо чёрной плашки */
+.sport-filters button[aria-pressed=true], .date-filters button[aria-pressed=true], .rating-toolbar button[aria-pressed=true],
+.we-buttons button[aria-pressed=true], .oc-rule button[aria-pressed=true], .bk-tabs button[aria-pressed=true] {
+  background-color: var(--acid); color: #1B1D19; border-color: var(--acid); }
+
+/* тёмные логотипы букмекеров на тёмном */
+img[src*="/leon."], img[src*="/pari."], image[href*="/pari."] { filter: invert(1) hue-rotate(180deg); }
+
+.match-card[hidden] { display: none; }
+
+/* ===== Версия 2 (12.10.2026): шапка одного цвета =====
+   Отзыв руководства: без отдельной лаймовой плашки с логотипом внутри тёмной шапки и без составных плашек.
+   Вся шапка — сплошной фирменный лайм, как на самом trbn.ru; чёрный логотип с красной короной лежит прямо
+   на ней (у файла логотипа тот же лайм, поэтому прямоугольника не видно). Раскладка и размеры не менялись. */
+.site-header, .site-header.classic-masthead, .site-header.masthead-refresh {
+  --ink: #1B1D19; --muted: rgba(27,29,25,.74); --line: rgba(27,29,25,.22); --orange: #3a4407; color: var(--ink); }
+.site-header.classic-masthead, .site-header.classic-masthead.is-article {
+  background: #E6FF57; -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: none; }
+.site-header .classic-brand-strip, .site-header .classic-nav, .site-header .classic-topics, .site-header .classic-services { background: transparent; box-shadow: none; }
+.site-header .classic-nav { border-color: var(--line); }
+.site-header .classic-nav a, .site-header .menu-toggle, .site-header .classic-services a { color: #1B1D19; background: transparent; border-radius: 0; box-shadow: none; }
+.site-header .classic-nav a:hover, .site-header .menu-toggle:hover { background: transparent; text-decoration: underline; text-underline-offset: 6px; }
+.site-header .classic-services small { color: rgba(27,29,25,.7); }
+.site-header .menu-grid-icon i { background-color: #1B1D19; }
+.site-header .classic-search svg { stroke: #1B1D19; }
+.site-header a:focus-visible, .site-header button:focus-visible { outline: 2px solid #1B1D19; outline-offset: 3px; }
+/* выпадающий список тем остаётся графитовым листом под шапкой, со светлым текстом */
+.classic-masthead .topic-directory { --ink: #F2F3EE; --muted: rgba(242,243,238,.72); --line: rgba(242,243,238,.14); --orange: #E6FF57; color: #F2F3EE; background-color: var(--g-solid); }
+.classic-masthead .topic-directory a { color: #F2F3EE; }
+
+/* Версия 3: логотип в шапке — файл без собственной подложки (tribuna-logo-plain.svg), так что отдельного
+   прямоугольника нет ни при каких стилях; лайм задан самой шапке целиком, вместе с меню. */
+.site-header.classic-masthead, .site-header.classic-masthead.is-article, .site-header.classic-masthead .classic-brand-strip, .site-header.classic-masthead .classic-nav { background-color: #E6FF57 !important; background-image: none !important; }
+.site-header .g-logo-box, .site-header .g-logo, .site-header .classic-wordmark { background: transparent !important; border-radius: 0 !important; box-shadow: none !important; }

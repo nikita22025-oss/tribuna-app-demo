@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1200" viewBox="0 0 900 1200" role="img" aria-label="Жёлтая и красная судейские карточки">
+<rect width="900" height="1200" fill="#191d19"/>
+<g stroke="#727867" stroke-width="1" opacity=".35"><path d="M0 200H900M0 400H900M0 600H900M0 800H900M0 1000H900M150 0V1200M300 0V1200M450 0V1200M600 0V1200M750 0V1200"/></g>
+<rect x="120" y="190" width="385" height="540" rx="12" fill="#e3f13a" transform="rotate(-11 310 460)"/>
+<rect x="387" y="420" width="385" height="540" rx="12" fill="#df3027" transform="rotate(10 580 690)"/>
+<g fill="none" stroke="#f4f2e6" stroke-width="6" stroke-linecap="round"><path d="M90 910Q175 830 237 855M210 831L240 854 214 874M660 243L679 225M702 281L734 276M717 320L744 333"/></g>
+<text x="70" y="1120" fill="#f4f2e6" font-family="Arial,sans-serif" font-size="38" letter-spacing="9">1966 → 1970</text>
+</svg>

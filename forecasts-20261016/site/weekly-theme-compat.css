@@ -1,0 +1,11 @@
+/* Keep explanatory surfaces legible in both the paper and Graphite themes.
+   Limited to the dated October 14 renderer; the site's theme is untouched. */
+.nv-paddle-box,.nv-ice-panel,.nv-crowd,.nv-time-table .nv-leader{
+  --ink:#1d211d;
+  --muted:#565d55;
+  --line:#a1b2b3;
+  color:#1d211d;
+  color-scheme:light;
+}
+.nv-paddle-box button,.nv-paddle-box select{color:#1d211d;background:#f3f0e6}
+.nv-article .jf-chapter-title>span{color:var(--muted)}

@@ -1,0 +1,88 @@
+/* All rules scoped to the stadium masthead. */
+.stadium-masthead{--stadium-paper:#f3ec9e;--stadium-ink:#151713;--stadium-red:#ef3026;background:var(--stadium-paper);color:var(--stadium-ink);border:0;isolation:isolate}
+.stadium-masthead a{color:inherit;text-decoration:none}
+.stadium-masthead :is(a,button):focus-visible{outline:2px solid var(--stadium-red);outline-offset:4px}
+.stadium-topbar{margin-inline:clamp(16px,2.6vw,48px);height:40px;display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:1px solid #151713b0;font:400 11px/1.2 var(--font)}
+.stadium-identity,.stadium-utility{display:flex;align-items:center;gap:20px}
+.stadium-identity strong{font-weight:700}
+.stadium-identity>span{border-left:1px solid;padding-left:20px}
+.stadium-utility>a{display:flex;align-items:center;gap:8px;min-height:32px;white-space:nowrap}
+.stadium-utility>a+a{position:relative;padding-left:20px}
+.stadium-utility>a+a:before{content:"";height:12px;width:1px;background:currentColor;position:absolute;left:0;top:calc(50% - 6px)}
+.stadium-utility>a:hover{text-decoration:underline;text-underline-offset:4px}
+.stadium-utility svg{width:18px;height:18px;flex:none}
+.stadium-utility [hidden]{display:none}
+/* Keep the panorama full width when a route caps its aspect-ratio height. */
+.stadium-panorama{position:relative;width:100%;aspect-ratio:6;max-height:390px;overflow:hidden;background:var(--stadium-paper)}
+.stadium-crowd{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%;pointer-events:none}
+.stadium-wordmark{position:absolute;inset:0;display:block}
+.stadium-wordmark svg{display:block;width:100%;height:100%;overflow:visible}
+.stadium-lettering{font-synthesis:style}
+.stadium-lettering-over-crowd{opacity:0}
+.stadium-contour-ready .stadium-lettering-over-crowd{opacity:1}
+.stadium-crown{transform-box:fill-box;transform-origin:center}
+.stadium-marker{stroke-dasharray:500;stroke-dashoffset:0;animation:stadium-mark-in .9s .2s both ease-out}
+.stadium-signature{position:absolute;right:2.3%;bottom:6%;margin:0;transform:rotate(-7deg);color:#fff;font:400 clamp(20px,2.4vw,43px)/1.1 TribunaHandwriting,cursive;pointer-events:none;-webkit-text-stroke:0;text-shadow:none}
+.stadium-signature span{display:block}
+.stadium-signature span:last-child{margin-left:10px;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:5px}
+.stadium-nav{display:flex;align-items:center;gap:0;min-height:46px;padding-inline:clamp(16px,2.6vw,48px);font:400 12px/1.3 var(--font)}
+.stadium-nav .menu-toggle{display:flex;position:relative;align-items:center;gap:11px;align-self:stretch;min-height:46px;padding:0 20px 0 0;border:0;border-radius:0;background:transparent;color:inherit;font:700 12px/1.3 var(--font);white-space:nowrap;cursor:pointer}
+.stadium-nav .menu-toggle:after{content:"";position:absolute;bottom:5px;left:27px;right:20px;height:3px;transform:rotate(-2deg);background:var(--stadium-red)}
+.stadium-nav .menu-grid-icon{display:grid;grid-template-columns:repeat(2,5px);grid-template-rows:repeat(2,5px);gap:3px}
+.stadium-topics{display:flex;align-items:center;min-width:0}
+.stadium-topics a,.stadium-services a{display:flex;align-items:center;white-space:nowrap;min-height:40px;position:relative;padding:0 20px}
+.stadium-topics a:before,.stadium-services a+a:before{content:"";position:absolute;left:0;top:calc(50% - 6px);height:12px;border-left:1px solid #15171390}
+.stadium-nav nav a:hover,.stadium-topics a[aria-current=page]{text-decoration:underline;text-decoration-color:var(--stadium-red);text-decoration-thickness:2px;text-underline-offset:7px}
+.stadium-services{display:flex;align-items:center;margin-left:auto;padding-left:20px}
+.stadium-services a:last-child{padding-right:0}
+.stadium-services small{font-size:9px;margin-left:4px;opacity:.6}
+.stadium-masthead .topic-directory{position:relative;z-index:2}
+.stadium-masthead .topic-directory a{color:inherit}
+@keyframes stadium-mark-in{from{stroke-dashoffset:500}to{stroke-dashoffset:0}}
+/* Secondary routes retain useful navigation with a shorter brand strip. */
+.bk-route .stadium-panorama{max-height:190px}
+@media(min-width:1900px){.stadium-panorama{max-height:none}}
+@media(max-width:1100px){
+  .stadium-topics a{padding-inline:13px}
+  .stadium-services{padding-left:8px}
+  .stadium-services a{padding-inline:13px}
+}
+@media(max-width:820px){
+  .stadium-topbar{height:39px;font-size:10px;gap:12px}
+  .stadium-identity{gap:12px}
+  .stadium-identity>span{padding-left:12px}
+  .stadium-utility{gap:12px}
+  .stadium-utility>a+a{padding-left:12px}
+  .stadium-nav{flex-wrap:wrap;justify-content:space-between}
+  .stadium-services{order:1;margin-left:auto}
+  .stadium-topics{order:2;flex:0 0 100%;border-top:1px solid #15171330;overflow-x:auto;scrollbar-width:none}
+  .stadium-topics::-webkit-scrollbar{display:none}
+  .stadium-topics a:first-child{padding-left:0}
+  .stadium-topics a:first-child:before{display:none}
+  .stadium-topics a{flex:1;justify-content:center;padding-inline:15px;min-height:38px}
+  .stadium-topics a:first-child{justify-content:flex-start}
+  .stadium-signature{font-size:clamp(15px,2.5vw,23px);right:3%}
+}
+@media(max-width:540px){
+  .stadium-topbar{font-size:9px;height:38px;margin-inline:16px}
+  .stadium-identity>span{display:none}
+  .stadium-identity strong{font-size:9px;letter-spacing:-.015em;white-space:nowrap}
+  .stadium-utility{gap:10px}
+  .stadium-utility>a{min-height:36px}
+  .stadium-utility>a+a{padding-left:10px}
+  .stadium-search span{display:none}
+  .stadium-utility svg{width:17px;height:17px}
+  .stadium-panorama{aspect-ratio:3.15}
+  .stadium-crowd{object-position:50% 50%}
+  .stadium-wordmark{bottom:auto;height:auto;aspect-ratio:1440/260;top:3%}
+  .stadium-signature{font-size:16px;right:5%;bottom:8%;line-height:1.1}
+  .stadium-signature span{display:inline}
+  .stadium-signature span:last-child{margin-left:5px}
+  .stadium-nav{padding-inline:16px;font-size:11px}
+  .stadium-nav .menu-toggle{font-size:11px;min-height:44px;padding-right:14px}
+  .stadium-services a{padding-inline:12px;font-size:11px;min-height:44px}
+  .stadium-topics a{font-size:11px;min-height:38px;padding-inline:15px}
+  .stadium-masthead .directory-top{flex-wrap:wrap}
+}
+@media(prefers-reduced-motion:reduce){.stadium-marker{animation:none}}
+@media print{.stadium-crowd,.stadium-signature,.stadium-nav,.stadium-utility{display:none}.stadium-masthead{background:none}}

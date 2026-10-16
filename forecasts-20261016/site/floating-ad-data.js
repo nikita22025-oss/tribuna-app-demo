@@ -1,0 +1,1 @@
+window.TRIBUNA_FLOATING_AD = {"id": "fonbet-floating-v1", "enabled": true, "preview_only": false, "source_advertiser": "Фонбет", "logo": "/tribuna-app-demo/forecasts-20261016/site/assets/fonbet.png", "headline": "Фрибеты", "condition": "Без депозита", "amount": "15 000 ₽", "cta": "Забрать бонус", "delay_ms": 1500};

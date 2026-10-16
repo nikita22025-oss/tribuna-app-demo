@@ -1,0 +1,19 @@
+/* Approved v2 identity: original sketched sports emblem + a Cyrillic wordmark. */
+.tribuna-sketch-logo{display:block;width:100%;height:auto;overflow:visible;color:var(--ink)}
+.masthead-refresh .masthead.sketch-brand{display:block;width:min(850px,82vw);max-width:100%;font-size:inherit;line-height:1;padding:4px 0 24px;letter-spacing:normal}
+.site-footer .footer-brand.sketch-brand{display:block;width:min(810px,100%);padding:25px 0 30px;margin:0;font-size:inherit;line-height:1;letter-spacing:normal;color:var(--ink)}
+.tribuna-ball-spin{transform-box:fill-box;transform-origin:center;animation:tribuna-ball-turn 22s linear infinite;will-change:transform}
+.sketch-brand:hover .tribuna-ball-spin,.sketch-brand:focus-visible .tribuna-ball-spin{animation-play-state:paused}
+@keyframes tribuna-ball-turn{to{transform:rotate(360deg)}}
+.bk-route .masthead-refresh .masthead.sketch-brand{width:300px;padding:0;flex:none}
+.bk-route .masthead-main{padding-block:13px}
+@media(max-width:1000px){.bk-route .masthead-refresh .masthead.sketch-brand{width:260px}}
+@media(max-width:800px){.bk-route .masthead-refresh .masthead.sketch-brand{width:230px}}
+@media(max-width:540px){
+ .masthead-refresh .masthead.sketch-brand{width:100%;padding:12px 0 22px}
+ .bk-route .masthead-refresh .masthead.sketch-brand{width:clamp(152px,49vw,225px);padding:0}
+ .bk-route .masthead-main{gap:14px;padding-block:16px}
+ .site-footer .footer-brand.sketch-brand{padding:20px 0 26px}
+}
+@media(prefers-reduced-motion:reduce){.tribuna-ball-spin{animation:none;will-change:auto}}
+@media print{.tribuna-ball-spin{animation:none}}
