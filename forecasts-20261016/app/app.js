@@ -336,73 +336,130 @@
   function fcStamp(iso) { return day(mskDay(iso), true) + ', ' + mskTime(iso) + ' МСК'; }
   function findForecast(id) { return FC ? FC.forecasts.filter(function (f) { return f.eventId === id; })[0] : null; }
   function forecastTitle(id) { var f = findForecast(id); return f ? f.home + ' — ' + f.away : 'Прогноз матча'; }
-  function probPills(f) {
-    var ul = el('ul', 'pills fc-probs');
-    ['home', 'draw', 'away'].forEach(function (k) { var li = el('li', k === f.selection ? 'pick' : null, LBL[k] + ' ' + pctf(f.probabilities[k])); if (k === f.selection) li.setAttribute('aria-current', 'true'); ul.appendChild(li); });
-    return ul;
+  var SHORT = { home: 'хозяева', draw: 'ничья', away: 'гости' }, OUT = { home: 'Победа хозяев', draw: 'Ничья', away: 'Победа гостей' };
+  // Полоска трёх исходов: ширина — вероятность, главный исход — акцентом; под ней подписи с числами.
+  function outcomeBar(f, big) {
+    var wrap = el('div', 'fc-bar' + (big ? ' big' : ''));
+    var track = el('div', 'fc-track'); track.setAttribute('aria-hidden', 'true');
+    ['home', 'draw', 'away'].forEach(function (k) { var s = el('span', k === f.selection ? 'on' : null); s.style.width = (f.probabilities[k] * 100).toFixed(1) + '%'; track.appendChild(s); });
+    wrap.appendChild(track);
+    var legend = el('ul', 'fc-legend'); legend.setAttribute('aria-label', 'Вероятности исходов');
+    ['home', 'draw', 'away'].forEach(function (k) {
+      var li = el('li', k === f.selection ? 'on' : null); li.appendChild(el('span', null, LBL[k] + ' · ' + SHORT[k])); li.appendChild(el('b', null, pctf(f.probabilities[k]))); legend.appendChild(li);
+    });
+    wrap.appendChild(legend); return wrap;
+  }
+  function mainPick(f) {
+    var d = el('div', 'fc-pick'); d.appendChild(el('p', 'num', pctf(f.probabilities[f.selection])));
+    var t = el('div'); t.appendChild(el('b', null, OUT[f.selection]));
+    t.appendChild(el('span', null, f.selection === 'draw' ? 'самый вероятный исход' : 'самый вероятный исход · ' + (f.selection === 'home' ? f.home : f.away)));
+    d.appendChild(t); return d;
   }
   function forecastCard(f) {
-    var c = el('a', 'mcard fc-card'); c.href = '#forecast/' + encodeURIComponent(f.eventId); c.dataset.id = f.eventId;
-    c.setAttribute('aria-label', 'Прогноз: ' + f.home + ' — ' + f.away + ', ' + LBL[f.selection] + ' ' + pctf(f.probabilities[f.selection]));
-    var w = el('div', 'when'); w.appendChild(el('b', null, mskTime(f.kickoff))); w.appendChild(el('span', null, 'МСК')); c.appendChild(w);
-    var t = el('div'); t.appendChild(el('span', 'tag', 'Футбол')); t.appendChild(el('p', 'league', f.league));
-    [f.home, f.away].forEach(function (name) { var row = el('p', 'team'), code = el('span', 'code', name.slice(0, 3).toUpperCase()); code.setAttribute('aria-hidden', 'true'); row.appendChild(code); row.appendChild(el('span', null, name)); t.appendChild(row); });
-    t.appendChild(probPills(f)); c.appendChild(t); return c;
+    var c = el('article', 'glass fc-card'); c.dataset.id = f.eventId;
+    var top = el('p', 'fc-top'); top.appendChild(el('span', 'kicker', f.league)); top.appendChild(el('span', 'fc-time', mskTime(f.kickoff) + ' МСК')); c.appendChild(top);
+    var h = el('h3', 'fc-teams'); h.appendChild(el('span', null, f.home)); h.appendChild(el('span', null, f.away)); c.appendChild(h);
+    c.appendChild(mainPick(f)); c.appendChild(outcomeBar(f));
+    if (f.details && f.details.summary) c.appendChild(el('p', 'fc-sum', f.details.summary));
+    var go = el('a', 'btn ghost fc-go'); go.href = '#forecast/' + encodeURIComponent(f.eventId);
+    go.setAttribute('aria-label', 'Подробный разбор: ' + f.home + ' — ' + f.away);
+    go.appendChild(el('span', null, 'Подробный разбор')); var arr = el('span', null, '→'); arr.setAttribute('aria-hidden', 'true'); go.appendChild(arr);
+    c.appendChild(go); return c;
   }
-  function qualityCard(title, q) {
-    var a = el('article', 'glass note-card fc-quality');
-    a.appendChild(el('h2', null, title + ' · сезон ' + q.season));
-    a.appendChild(el('p', null, q.matches + ' матчей, прогноз рассчитан для ' + pctf(q.coverage) + '. Исход с наибольшей вероятностью совпал в ' + pctf(q.model.accuracy) + ' матчей; частоты исходов лиги — ' + pctf(q.leagueFrequencies.accuracy) + '.'));
-    a.appendChild(el('p', null, 'Логарифмическая ошибка ' + decf(q.model.logLoss) + ' против ' + decf(q.leagueFrequencies.logLoss) + ' у частот лиги и ' + decf(q.equalThirds.logLoss) + ' у равных вероятностей; оценка Брайера ' + decf(q.model.brier) + ' против ' + decf(q.leagueFrequencies.brier) + '. Меньше — лучше. Разница с частотами лиги ' + decf(q.logLossDifference.mean) + ', 95% интервал ' + decf(q.logLossDifference.lower95) + '…' + decf(q.logLossDifference.upper95) + '.'));
-    var ul = el('ul', 'fc-calib'); ul.setAttribute('aria-label', 'Надёжность вероятностей: самый вероятный исход');
-    q.calibration.forEach(function (b) { ul.appendChild(el('li', null, 'Модель давала ' + Math.round(b.from * 100) + '–' + Math.round(b.to * 100) + '% (в среднем ' + pctf(b.predicted) + ') → сбылось ' + pctf(b.observed) + ' · ' + b.n + ' матчей')); });
-    a.appendChild(ul); return a;
+  // Методика и проверка — свёрнуто: открывает тот, кому это нужно.
+  function methodBlock(q) {
+    var a = el('article', 'glass fc-method'), det = el('details');
+    det.appendChild(el('summary', null, 'Как модель считает и как проверена'));
+    det.appendChild(el('p', null, 'Модель оценивает, сколько голов команды забивают и пропускают дома и в гостях за последние два года — свежие матчи весят больше, — и переводит это в вероятности исходов основного времени. Составы, травмы и коэффициенты букмекеров не учитываются.'));
+    var dl = el('dl', 'fc-stats');
+    [[pctf(q.evaluation.model.accuracy), 'исход совпал в сезоне ' + q.evaluation.season + ' · ' + q.evaluation.matches + ' матчей'],
+     [pctf(q.evaluation.leagueFrequencies.accuracy), 'у простого ориентира — частот исходов в лиге'],
+     [pctf(q.prospective.model.accuracy), 'в текущем сезоне до расчёта · ' + q.prospective.matches + ' матчей']].forEach(function (r) {
+      var d = el('div'); d.appendChild(el('dt', null, r[0])); d.appendChild(el('dd', null, r[1])); dl.appendChild(d);
+    });
+    det.appendChild(dl);
+    det.appendChild(el('p', null, 'В проверке каждый прогноз считался только по матчам, сыгранным раньше него. Это результат на прошлых матчах, а не обещание выигрыша. Чемпионаты: ' + q.leagues.join(', ') + '.'));
+    a.appendChild(det); return a;
   }
   function renderForecasts() {
     var host = $('f-body'); host.textContent = '';
     if (!FC) { if (fcError) host.appendChild(stateBlock('Не удалось загрузить прогнозы', 'Проверьте соединение и попробуйте ещё раз. (' + fcError + ')', loadForecasts)); else skeleton(host); return; }
     host.removeAttribute('aria-busy');
-    host.appendChild(el('p', 'fresh', 'Демо: снимок расчёта от ' + fcStamp(FC.updatedAt) + '. Прогнозы не обновляются; после начала матча прогноз остаётся таким, каким был до матча. Вероятности модели, а не коэффициенты букмекеров. 18+'));
+    var meta = el('ul', 'pills fc-meta');
+    ['Демо · снимок ' + day(mskDay(FC.updatedAt)) + ', ' + mskTime(FC.updatedAt) + ' МСК', FC.forecasts.length + ' ' + plural(FC.forecasts.length, 'матч', 'матча', 'матчей'), 'Не обновляется', '18+'].forEach(function (t) { meta.appendChild(el('li', null, t)); });
+    host.appendChild(meta);
+    host.appendChild(el('p', 'fresh', 'Вероятности исходов основного времени по модели «Трибуны» — не коэффициенты букмекеров и не совет делать ставку.'));
     var now = Date.now(), list = FC.forecasts.slice().sort(function (a, b) { return Date.parse(a.kickoff) - Date.parse(b.kickoff); });
     var ahead = list.filter(function (f) { return Date.parse(f.kickoff) > now; }), past = list.filter(function (f) { return Date.parse(f.kickoff) <= now; });
-    function group(items, label) {
+    function group(items, label, note) {
       if (!items.length) return;
-      if (label) host.appendChild(el('h2', 'day-h fc-group', label));
+      if (label) { host.appendChild(el('h2', 'fc-group', label)); if (note) host.appendChild(el('p', 'fresh', note)); }
       var last = '';
       items.forEach(function (f) {
         var d = mskDay(f.kickoff);
-        if (d !== last) { last = d; var h = el('h2', 'day-h'); h.appendChild(el('b', null, day(d))); var n = items.filter(function (x) { return mskDay(x.kickoff) === d; }).length; h.appendChild(el('span', null, n + ' ' + plural(n, 'прогноз', 'прогноза', 'прогнозов'))); host.appendChild(h); }
+        if (d !== last) { last = d; var h = el('h2', 'day-h'); h.appendChild(el('b', null, day(d))); var n = items.filter(function (x) { return mskDay(x.kickoff) === d; }).length; h.appendChild(el('span', null, n + ' ' + plural(n, 'матч', 'матча', 'матчей'))); host.appendChild(h); }
         host.appendChild(forecastCard(f));
       });
     }
     group(ahead, ahead.length && past.length ? 'До начала матча' : '');
-    group(past, 'Матч начался после снимка — прогноз зафиксирован до матча');
-    var q = FC.quality;
-    if (q) {
-      var head = el('article', 'glass note-card'); head.appendChild(el('h2', null, 'Как модель проверена'));
-      head.appendChild(el('p', null, q.method + ' Источник: ' + q.source + '; ' + q.historyMatches + ' матчей в истории. Чемпионаты: ' + q.leagues.join(', ') + '. Параметры подобраны на сезоне 2023/24, калибровка — на 2024/25.'));
-      host.appendChild(head);
-      host.appendChild(qualityCard('Проверочный сезон', q.evaluation));
-      host.appendChild(qualityCard('Текущий сезон, до расчёта', q.prospective));
-    }
-    host.appendChild(el('p', 'legal', 'Показатели описывают прошлые матчи и не гарантируют результат будущих. 18+ Трибуна не принимает ставки.'));
+    group(past, 'Уже сыграны или идут', 'Прогноз зафиксирован до начала матча и не меняется. Итоги в демо не показываются.');
+    if (FC.quality) host.appendChild(methodBlock(FC.quality));
+    host.appendChild(el('p', 'legal', 'Вероятность — оценка модели, а не обещание результата. 18+ Трибуна не принимает ставки.'));
   }
+  function signed(r, verb) { var v = Math.round((r - 1) * 100); return verb + ' ' + (v === 0 ? 'на уровне лиги' : (v > 0 ? '+' : '−') + Math.abs(v) + '% к среднему'); }
+  function block(no, title) { var s = el('section', 'glass fc-block'); s.appendChild(el('p', 'kicker', no + ' / ' + title)); return s; }
   function renderForecast(id) {
     var host = $('fc-body'); host.textContent = '';
     if (!FC) { if (fcError) host.appendChild(stateBlock('Не удалось загрузить прогноз', 'Проверьте соединение и попробуйте ещё раз. (' + fcError + ')', loadForecasts)); else skeleton(host); return; }
     host.removeAttribute('aria-busy');
     var f = findForecast(id);
     if (!f) { var h0 = el('h1', null, 'Прогноз не найден'); h0.id = 'fc-title'; h0.tabIndex = -1; host.appendChild(h0); host.appendChild(stateBlock('Такого матча нет в снимке', 'Откройте список прогнозов.', null, true)); return; }
-    host.appendChild(el('p', 'kicker', 'Прогноз · Футбол · ' + f.league));
-    var h = el('h1', null, f.home + ' — ' + f.away); h.id = 'fc-title'; h.tabIndex = -1; host.appendChild(h);
-    host.appendChild(el('p', 'byline', 'Начало ' + fcStamp(f.kickoff) + ' · основное время'));
-    host.appendChild(probPills(f));
-    host.appendChild(el('p', 'standfirst', 'Вероятнее всего по модели — ' + WORD[f.selection] + ' (' + pctf(f.probabilities[f.selection]) + '). Это оценка модели, а не коэффициенты букмекеров и не обещание результата.' + (Date.parse(f.kickoff) <= Date.now() ? ' Матч начался после снимка: прогноз зафиксирован до матча, итог в демо не показывается.' : '')));
-    var prose = el('div', 'prose'); prose.appendChild(el('h2', null, 'Почему так'));
-    f.reasons.forEach(function (r) { prose.appendChild(el('p', null, r)); }); host.appendChild(prose);
+    var d = f.details || {};
+    host.appendChild(el('p', 'kicker', f.league + ' · ' + day(mskDay(f.kickoff)) + ', ' + mskTime(f.kickoff) + ' МСК'));
+    var h = el('h1', 'fc-h1'); h.id = 'fc-title'; h.tabIndex = -1; h.appendChild(el('span', null, f.home)); h.appendChild(el('span', null, '— ' + f.away)); host.appendChild(h);
+    var main = el('section', 'glass stub fc-main'); main.appendChild(el('p', 'fc-label', 'Прогноз модели · основное время'));
+    main.appendChild(mainPick(f)); main.appendChild(outcomeBar(f, true));
+    if (Date.parse(f.kickoff) <= Date.now()) main.appendChild(el('p', 'fc-note', 'Матч начался после снимка: прогноз зафиксирован до начала, итог в демо не показывается.'));
+    host.appendChild(main);
+    if (d.summary) host.appendChild(el('p', 'standfirst fc-short', d.summary));
+    if (d.expectedGoals) {
+      var b1 = block('01', 'Ожидаемые голы'), g = el('div', 'fc-xg');
+      [[d.expectedGoals.home, f.home], [d.expectedGoals.away, f.away]].forEach(function (x) { var c = el('div'); c.appendChild(el('b', null, x[0].toFixed(2).replace('.', ','))); c.appendChild(el('span', null, x[1])); g.appendChild(c); });
+      b1.appendChild(g); b1.appendChild(el('p', 'fc-cap', 'Расчёт по забитым и пропущенным голам, не xG по ударам.')); host.appendChild(b1);
+    }
+    if (d.strength) {
+      var b2 = block('02', 'Сила команд относительно лиги');
+      [[f.home + ' дома', d.strength.home], [f.away + ' в гостях', d.strength.away]].forEach(function (x) {
+        var row = el('div', 'fc-row'); row.appendChild(el('b', null, x[0]));
+        var ul = el('ul', 'pills fc-chips');
+        var a = el('li', x[1].attack >= 1.05 ? 'good' : x[1].attack <= 0.95 ? 'bad' : null, signed(x[1].attack, 'Забивает'));
+        var p = el('li', x[1].defense <= 0.95 ? 'good' : x[1].defense >= 1.05 ? 'bad' : null, signed(x[1].defense, 'Пропускает'));
+        ul.appendChild(a); ul.appendChild(p); row.appendChild(ul); b2.appendChild(row);
+      });
+      host.appendChild(b2);
+    }
+    if (d.form && (d.form.home.length || d.form.away.length)) {
+      var b3 = block('03', 'Последние матчи в чемпионате');
+      [[f.home, d.form.home], [f.away, d.form.away]].forEach(function (x) {
+        var row = el('div', 'fc-row'); row.appendChild(el('b', null, x[0]));
+        var ul = el('ul', 'fc-form'); ul.setAttribute('aria-label', 'Последние матчи, от старых к новым: ' + (x[1].join(', ') || 'нет данных'));
+        x[1].forEach(function (r) { ul.appendChild(el('li', r === 'В' ? 'w' : r === 'П' ? 'l' : 'd', r)); });
+        if (!x[1].length) ul.appendChild(el('li', 'd', '—'));
+        row.appendChild(ul); b3.appendChild(row);
+      });
+      b3.appendChild(el('p', 'fc-cap', 'В — победа, Н — ничья, П — поражение; слева направо от старых к новым.')); host.appendChild(b3);
+    }
+    if (d.scores && d.scores.length) {
+      var b4 = block('04', 'Самые вероятные счета'), ul4 = el('ul', 'pills fc-scores');
+      d.scores.forEach(function (s) { var li = el('li'); li.appendChild(el('b', null, s.score.replace(':', ' : '))); li.appendChild(el('span', null, pctf(s.probability))); ul4.appendChild(li); });
+      b4.appendChild(ul4); host.appendChild(b4);
+    }
+    var b5 = block(d.scores ? '05' : '01', 'Что модель не учитывает');
+    b5.appendChild(el('p', null, 'Составы, травмы, мотивацию, погоду и коэффициенты букмекеров.')); host.appendChild(b5);
+    if (!f.details) { var prose = el('div', 'prose'); f.reasons.forEach(function (r) { prose.appendChild(el('p', null, r)); }); host.appendChild(prose); }
     var src = el('div', 'sources');
-    src.appendChild(el('p', null, 'Демо: снимок расчёта ' + fcStamp(f.issuedAt) + '; учтены результаты до ' + fcStamp(f.inputUntil) + '.'));
-    src.appendChild(el('p', null, 'Модель ' + f.modelVersion + ' · ' + f.source + '. 18+'));
+    src.appendChild(el('p', null, 'Демо: снимок расчёта ' + fcStamp(f.issuedAt) + ', не обновляется. Учтены результаты до ' + fcStamp(f.inputUntil) + (d.sample ? '; ' + d.sample.league + ' матчей лиги, из них ' + d.sample.home + ' домашних у хозяев и ' + d.sample.away + ' выездных у гостей.' : '.')));
+    src.appendChild(el('p', null, 'Модель ' + f.modelVersion + ' · ' + f.source + '. Вероятность — оценка, а не обещание результата. 18+'));
     host.appendChild(src);
   }
   function loadForecasts() {

@@ -114,8 +114,8 @@
     return `${head}${body}${forecastTeaser(m)}<a class="editorial-link" href="/bookmakers">Смотреть букмекеров ↗</a></section>`;
   };
 
-  // «Прогнозы»: probabilities of the forecast model (not bookmaker odds), the explanation and the model's
-  // measured quality, from forecasts.json (service/forecasts/generate.ts).
+  // «Прогнозы»: probabilities of the forecast model (not bookmaker odds), a short explanation, the match analysis
+  // in plain blocks, and the model check folded away. Data: forecasts.json (service/forecasts/generate.ts).
   const FORECASTS_URL=window.TRIBUNA_FORECASTS_URL||'/forecasts.json';
   let forecastFeed=null, forecastState='idle';
   function loadForecasts(){
@@ -129,36 +129,137 @@
       if(p==='forecasts'||p==='forecast'||p==='match') render();
     });
   }
+  // Styles live with the code (one file to ship); colours and fonts are the theme's variables.
+  function forecastStyles(){
+    if(document.getElementById('fc-styles')) return;
+    const s=document.createElement('style'); s.id='fc-styles';
+    s.textContent=`
+.fc-wrap{--fc-line:var(--line,rgba(242,243,238,.14));--fc-muted:var(--muted,rgba(242,243,238,.72));--fc-acid:var(--acid,#E6FF57);--fc-ink:var(--ink,#F2F3EE);--fc-panel:var(--g-glass,rgba(27,29,25,.62))}
+.fc-wrap .fc-kicker{font:700 11px/1.35 var(--font,Golos,sans-serif);letter-spacing:.14em;text-transform:uppercase;color:var(--fc-muted);margin:0}
+.fc-wrap .fc-meta{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 8px;padding:0;list-style:none}
+.fc-wrap .fc-meta li{font:600 12px/1.2 var(--font,Golos,sans-serif);color:var(--fc-muted);border:1px solid var(--fc-line);padding:7px 10px}
+.fc-wrap .fc-meta li:first-child{color:var(--fc-acid);border-color:var(--fc-acid)}
+.fc-day{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:34px 0 14px;padding-top:14px;border-top:1px solid var(--fc-line)}
+.fc-day b{font:700 26px/1 var(--display,Oswald,sans-serif);text-transform:uppercase;color:var(--fc-ink)}
+.fc-day span{font-size:13px;color:var(--fc-muted)}
+.fc-group{font:700 30px/1.05 var(--display,Oswald,sans-serif);text-transform:uppercase;margin:44px 0 6px;color:var(--fc-ink)}
+.fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.fc-card{display:grid;gap:14px;align-content:start;border:1px solid var(--fc-line);background:var(--fc-panel);padding:20px 20px 0}
+.fc-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.fc-time{font:500 20px/1 var(--display,Oswald,sans-serif);color:var(--fc-ink);white-space:nowrap}
+.fc-teams{display:grid;gap:2px;margin:0;font:700 23px/1.15 var(--serif,Georgia,serif);color:var(--fc-ink);overflow-wrap:anywhere}
+.fc-pick{display:flex;align-items:center;gap:16px;border-top:1px solid var(--fc-line);padding-top:14px}
+.fc-pick .fc-num{font:500 52px/.9 var(--display,Oswald,sans-serif);color:var(--fc-acid);flex:none}
+.fc-pick b{display:block;font:800 18px/1.2 var(--font,Golos,sans-serif);color:var(--fc-ink)}
+.fc-pick small{display:block;margin-top:4px;font-size:13px;line-height:1.35;color:var(--fc-muted);overflow-wrap:anywhere}
+.fc-track{display:flex;gap:3px;height:8px}
+.fc-track span{background:rgba(242,243,238,.24);min-width:6px}
+.fc-track span.on{background:var(--fc-acid)}
+.fc-legend{list-style:none;padding:0;margin:10px 0 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.fc-legend li{display:grid;gap:4px;font-size:12px;line-height:1.2;color:var(--fc-muted)}
+.fc-legend li b{font:500 22px/1 var(--display,Oswald,sans-serif);color:var(--fc-ink)}
+.fc-legend li.on,.fc-legend li.on b{color:var(--fc-acid)}
+.fc-sum{margin:0;font-size:15px;line-height:1.5;color:var(--fc-ink)}
+.fc-go{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 -20px;padding:16px 20px;border-top:1px solid var(--fc-line);font:700 15px/1.2 var(--font,Golos,sans-serif);color:var(--fc-ink);text-decoration:none}
+.fc-go:hover,.fc-go:focus-visible{color:var(--fc-acid)}
+.fc-method{margin-top:44px;border:1px solid var(--fc-line);background:var(--fc-panel);padding:4px 20px}
+.fc-method summary{cursor:pointer;min-height:52px;display:flex;align-items:center;font:700 20px/1.2 var(--display,Oswald,sans-serif);text-transform:uppercase;color:var(--fc-ink)}
+.fc-method p{color:var(--fc-muted);font-size:15px;line-height:1.55;max-width:70ch;margin:10px 0}
+.fc-stats{margin:14px 0;border-top:1px solid var(--fc-line)}
+.fc-stats div{display:flex;gap:16px;align-items:baseline;padding:12px 0;border-bottom:1px solid var(--fc-line)}
+.fc-stats dt{font:500 34px/1 var(--display,Oswald,sans-serif);color:var(--fc-acid);min-width:72px}
+.fc-stats dd{margin:0;color:var(--fc-muted);font-size:15px;line-height:1.4}
+.fc-legal{margin-top:22px;font-size:13px;color:var(--fc-muted)}
+.fc-wrap .fc-h1{display:grid;gap:2px;margin:10px 0 0;font:700 clamp(34px,5.4vw,60px)/1.02 var(--display,Oswald,sans-serif);text-transform:uppercase;letter-spacing:-.01em;color:var(--fc-ink);overflow-wrap:anywhere}
+.fc-main{display:grid;gap:16px;margin-top:24px;border:1px solid var(--fc-line);border-top:3px solid var(--fc-acid);background:var(--fc-panel);padding:20px;max-width:720px}
+.fc-main .fc-pick{border-top:0;padding-top:0}
+.fc-main .fc-pick .fc-num{font-size:68px}
+.fc-main .fc-track{height:12px}
+.fc-main .fc-legend li b{font-size:30px}
+.fc-note{margin:0;font-size:13px;color:var(--fc-muted)}
+.fc-short{margin:22px 0 0;max-width:720px;font:400 21px/1.45 var(--serif,Georgia,serif);color:var(--fc-ink)}
+.fc-blocks{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:26px}
+.fc-block{display:grid;gap:12px;align-content:start;border:1px solid var(--fc-line);background:var(--fc-panel);padding:20px}
+.fc-xg{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fc-xg div{display:grid;gap:6px}
+.fc-xg b{font:500 46px/1 var(--display,Oswald,sans-serif);color:var(--fc-ink)}
+.fc-xg span,.fc-cap{font-size:13px;line-height:1.35;color:var(--fc-muted);overflow-wrap:anywhere;margin:0}
+.fc-row{display:grid;gap:8px;padding-top:10px;border-top:1px solid var(--fc-line)}
+.fc-row>b{font:700 16px/1.3 var(--font,Golos,sans-serif);color:var(--fc-ink);overflow-wrap:anywhere}
+.fc-chips,.fc-form,.fc-scores{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:6px}
+.fc-chips li{font-size:13px;line-height:1.2;padding:7px 10px;border:1px solid var(--fc-line);color:var(--fc-muted)}
+.fc-chips li.good{color:var(--fc-acid);border-color:var(--fc-acid)}
+.fc-chips li.bad{color:#ffb4a8;border-color:rgba(255,180,168,.5)}
+.fc-form li{width:34px;height:34px;display:grid;place-items:center;font:700 14px/1 var(--font,Golos,sans-serif);border:1px solid var(--fc-line);color:var(--fc-muted)}
+.fc-form li.w{background:var(--fc-acid);border-color:var(--fc-acid);color:#1B1D19}
+.fc-form li.l{border-color:rgba(255,180,168,.55);color:#ffb4a8}
+.fc-scores li{display:flex;gap:10px;align-items:baseline;padding:8px 12px;border:1px solid var(--fc-line)}
+.fc-scores li b{font:500 24px/1 var(--display,Oswald,sans-serif);color:var(--fc-ink)}
+.fc-scores li span{color:var(--fc-muted);font-size:13px}
+.fc-block p{margin:0;color:var(--fc-muted);font-size:15px;line-height:1.5}
+.fc-foot{margin-top:24px;max-width:720px;font-size:13px;line-height:1.5;color:var(--fc-muted)}
+.fc-links{display:flex;flex-wrap:wrap;gap:12px 28px;margin-top:20px}
+.match-forecast{margin:28px 0}
+.match-forecast .fc-card{max-width:520px}
+@media (max-width:600px){.fc-card{padding:18px 16px 0}.fc-go{margin:0 -16px;padding:16px}.fc-pick .fc-num{font-size:46px}.fc-main .fc-pick .fc-num{font-size:58px}.fc-teams{font-size:21px}.fc-short{font-size:19px}}`;
+    document.head.appendChild(s);
+  }
   const pctText=v=>`${Math.round(v*100)}%`;
-  const decText=(v,d=3)=>v.toFixed(d).replace('.',',');
-  const fcLabels={home:'П1',draw:'X',away:'П2'}, fcWords={home:'победа хозяев',draw:'ничья',away:'победа гостей'};
+  const fcLabels={home:'П1',draw:'X',away:'П2'}, fcSides={home:'хозяева',draw:'ничья',away:'гости'}, fcOut={home:'Победа хозяев',draw:'Ничья',away:'Победа гостей'};
   const fcTime=iso=>new Date(iso).toLocaleString('ru-RU',{timeZone:'Europe/Moscow',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})+' МСК';
+  const fcClock=iso=>new Date(iso).toLocaleTimeString('ru-RU',{timeZone:'Europe/Moscow',hour:'2-digit',minute:'2-digit'});
+  const fcDay=iso=>new Date(iso).toLocaleDateString('ru-RU',{timeZone:'Europe/Moscow',day:'numeric',month:'long'});
   const fcOk=f=>f&&typeof f.eventId==='string'&&['home','draw','away'].every(k=>typeof f.probabilities?.[k]==='number'&&f.probabilities[k]>=0&&f.probabilities[k]<=1)&&Array.isArray(f.reasons);
   const fcUpcoming=f=>fcOk(f)&&f.status==='pending'&&Date.parse(f.kickoff)>Date.now();
-  const fcStrip=f=>`<div class="odds-strip forecast-strip">${['home','draw','away'].map(k=>`<span${k===f.selection?' data-pick="1"':''}><small>${fcLabels[k]}</small><b>${pctText(f.probabilities[k])}</b></span>`).join('')}</div>`;
-  const fcBadges=f=>{const m=(window.__INITIAL__?.matches||[]).find(x=>x.id===f.eventId);return m||{sport:'Футбол',home:f.home,away:f.away,homeCode:f.home.slice(0,3).toUpperCase(),awayCode:f.away.slice(0,3).toUpperCase(),colors:['#2f7a4f','#1f5f8b']};};
   const fcNotice=()=>forecastState==='error'?'<p class="demo-note">Не удалось загрузить прогнозы. Обновите страницу позже.</p>':forecastState!=='ready'?'<p class="demo-note">Загружаем прогнозы…</p>':'';
-  function forecastCard(f){
-    const t=fcBadges(f);
-    return `<article class="match-card" data-forecast="${h(f.eventId)}"><div class="match-card-meta"><span>Футбол</span><time datetime="${h(f.kickoff)}">${h(fcTime(f.kickoff))}</time></div><a class="match-card-link" href="/forecast/${encodeURIComponent(f.eventId)}"><p class="match-league">${h(f.league)}</p><div class="match-teams"><div>${teamBadge(t,'home')}<strong>${h(f.home)}</strong></div><div>${teamBadge(t,'away')}<strong>${h(f.away)}</strong></div></div></a><div class="match-market"><span class="match-odds-note">Вероятности модели · не коэффициенты</span><span>18+</span></div>${fcStrip(f)}</article>`;
+  const fcPlural=(n,a,b,c)=>{const x=n%10,y=n%100;return x===1&&y!==11?a:x>=2&&x<=4&&(y<12||y>14)?b:c;};
+  function fcBar(f){
+    return `<div class="fc-bar"><div class="fc-track" aria-hidden="true">${['home','draw','away'].map(k=>`<span${k===f.selection?' class="on"':''} style="width:${(f.probabilities[k]*100).toFixed(1)}%"></span>`).join('')}</div><ul class="fc-legend forecast-strip" aria-label="Вероятности исходов">${['home','draw','away'].map(k=>`<li${k===f.selection?' class="on" data-pick="1"':''}><span>${fcLabels[k]} · ${fcSides[k]}</span><b>${pctText(f.probabilities[k])}</b></li>`).join('')}</ul></div>`;
   }
-  function qualityPart(q,label){
-    if(!q||!q.model) return '';
-    const diff=q.logLossDifference||{};
-    return `<div class="forecast-quality" data-quality="${h(label)}"><h3>${h(label)}: сезон ${h(q.season)}</h3><p>${q.matches} матчей, прогноз рассчитан для ${pctText(q.coverage)}. Исход с наибольшей вероятностью совпал в ${pctText(q.model.accuracy)} матчей (частоты исходов лиги — ${pctText(q.leagueFrequencies.accuracy)}).</p><p>Логарифмическая ошибка ${decText(q.model.logLoss)} против ${decText(q.leagueFrequencies.logLoss)} у частот лиги и ${decText(q.equalThirds.logLoss)} у равных вероятностей; оценка Брайера ${decText(q.model.brier)} против ${decText(q.leagueFrequencies.brier)}. Меньше — лучше. Разница с частотами лиги ${decText(diff.mean)}, 95% интервал ${decText(diff.lower95)}…${decText(diff.upper95)}.</p><div class="table-scroll"><table class="odds-table"><caption>Надёжность вероятностей: самый вероятный исход</caption><thead><tr><th scope="col">Модель давала</th><th scope="col">В среднем</th><th scope="col">Сбылось</th><th scope="col">Матчей</th></tr></thead><tbody>${(q.calibration||[]).map(b=>`<tr><td>${Math.round(b.from*100)}–${Math.round(b.to*100)}%</td><td>${pctText(b.predicted)}</td><td>${pctText(b.observed)}</td><td>${b.n}</td></tr>`).join('')}</tbody></table></div></div>`;
+  function fcPick(f){
+    const who=f.selection==='draw'?'':' · '+(f.selection==='home'?f.home:f.away);
+    return `<div class="fc-pick"><span class="fc-num">${pctText(f.probabilities[f.selection])}</span><div><b>${fcOut[f.selection]}</b><small>самый вероятный исход${h(who)}</small></div></div>`;
+  }
+  function forecastCard(f){
+    const d=f.details||{};
+    return `<article class="fc-card" data-forecast="${h(f.eventId)}"><div class="fc-top"><p class="fc-kicker">${h(f.league)}</p><span class="fc-time">${h(fcClock(f.kickoff))} МСК</span></div><h3 class="fc-teams"><span>${h(f.home)}</span><span>${h(f.away)}</span></h3>${fcPick(f)}${fcBar(f)}${d.summary?`<p class="fc-sum">${h(d.summary)}</p>`:''}<a class="fc-go" href="/forecast/${encodeURIComponent(f.eventId)}" aria-label="Подробный разбор: ${h(f.home)} — ${h(f.away)}"><span>Подробный разбор</span><span aria-hidden="true">↗</span></a></article>`;
+  }
+  function fcDays(list){
+    let out='', last='';
+    list.forEach((f,i)=>{
+      const d=fcDay(f.kickoff);
+      if(d!==last){ if(last) out+='</div>'; last=d; const n=list.filter(x=>fcDay(x.kickoff)===d).length; out+=`<div class="fc-day"><b>${h(d)}</b><span>${n} ${fcPlural(n,'матч','матча','матчей')}</span></div><div class="fc-grid">`; }
+      out+=forecastCard(f);
+    });
+    return out+(last?'</div>':'');
+  }
+  function fcMethod(q){
+    if(!q||!q.evaluation||!q.prospective) return '';
+    return `<details class="fc-method"><summary>Как модель считает и как проверена</summary><p>Модель оценивает, сколько голов команды забивают и пропускают дома и в гостях за последние два года — свежие матчи весят больше, — и переводит это в вероятности исходов основного времени. Составы, травмы и коэффициенты букмекеров не учитываются.</p><dl class="fc-stats"><div><dt>${pctText(q.evaluation.model.accuracy)}</dt><dd>исход совпал в сезоне ${h(q.evaluation.season)} · ${q.evaluation.matches} матчей</dd></div><div><dt>${pctText(q.evaluation.leagueFrequencies.accuracy)}</dt><dd>у простого ориентира — частот исходов в лиге</dd></div><div><dt>${pctText(q.prospective.model.accuracy)}</dt><dd>в текущем сезоне до расчёта · ${q.prospective.matches} матчей</dd></div></dl><p>В проверке каждый прогноз считался только по матчам, сыгранным раньше него. Это результат на прошлых матчах, а не обещание выигрыша. Чемпионаты: ${h((q.leagues||[]).join(', '))}.</p></details>`;
   }
   function renderForecasts(){
+    forecastStyles();
     const d=forecastFeed, byTime=(a,b)=>Date.parse(a.kickoff)-Date.parse(b.kickoff), list=d?d.forecasts.filter(fcUpcoming).sort(byTime):[], q=d&&d.quality;
     // Matches that started after the calculation stay listed, marked: the forecast was fixed before kick-off.
     const past=d?d.forecasts.filter(f=>fcOk(f)&&Date.parse(f.kickoff)<=Date.now()).sort(byTime):[];
     const snapshot=window.TRIBUNA_FORECASTS_SNAPSHOT===true, stale=d&&!snapshot&&Date.now()-Date.parse(d.updatedAt)>6*3600000;
-    return `<section class="wrap reading-forecasts"><a class="back-link" href="/matches">← Все матчи</a><div class="category-header"><p>Футбол · ${h(q?q.leagues.join(', '):'шесть чемпионатов')}</p><h1>ПРОГНОЗЫ</h1><p>Вероятности исходов основного времени по модели «Трибуны». Это не коэффициенты букмекеров и не совет делать ставку. 18+</p>${d?`<p class="forecast-updated">${snapshot?'Демо: снимок расчёта ':'Расчёт '}${h(fcTime(d.updatedAt))}${snapshot?'. Прогнозы не обновляются.':stale?' · данные устарели, требуется пересчёт':''}</p>`:''}</div>${fcNotice()}${d?(list.length?`<div class="match-grid">${list.map(forecastCard).join('')}</div>`:'<p class="demo-note">Ближайших матчей с прогнозом нет.</p>'):''}${past.length?`<h2>Матч начался — прогноз зафиксирован до матча</h2><p class="demo-note">Вероятности показаны такими, какими были до начала. Итоги матчей здесь не подставляются.</p><div class="match-grid">${past.map(forecastCard).join('')}</div>`:''}${q?`<h2>Как модель проверена</h2><p class="demo-note">${h(q.method)} Источник: ${h(q.source)}; ${q.historyMatches} матчей в истории. Параметры подобраны на сезоне 2023/24, калибровка — на 2024/25.</p>${qualityPart(q.evaluation,'Проверочный сезон')}${qualityPart(q.prospective,'Текущий сезон, до сегодняшнего дня')}<p class="demo-note">Показатели описывают прошлые сезоны и не гарантируют результат будущих матчей.</p>`:''}</section>`;
+    const meta=d?`<ul class="fc-meta"><li>${snapshot?'Демо · снимок ':'Расчёт '}${h(fcTime(d.updatedAt))}</li><li>${d.forecasts.length} ${fcPlural(d.forecasts.length,'матч','матча','матчей')}</li>${snapshot?'<li>Не обновляется</li>':stale?'<li>Данные устарели, требуется пересчёт</li>':''}<li>18+</li></ul>`:'';
+    return `<section class="wrap reading-forecasts fc-wrap"><a class="back-link" href="/matches">← Все матчи</a><div class="category-header"><p>Футбол · ${h(q?q.leagues.join(', '):'шесть чемпионатов')}</p><h1>ПРОГНОЗЫ</h1><p>Вероятности исходов основного времени по модели «Трибуны» — не коэффициенты букмекеров и не совет делать ставку.</p></div>${meta}${fcNotice()}${d?(list.length?fcDays(list):(past.length?'':'<p class="demo-note">Ближайших матчей с прогнозом нет.</p>')):''}${past.length?`<h2 class="fc-group">Уже сыграны или идут</h2><p class="demo-note">Прогноз зафиксирован до начала матча и не меняется. Итоги матчей здесь не подставляются.</p>${fcDays(past)}`:''}${fcMethod(q)}<p class="fc-legal">Вероятность — оценка модели, а не обещание результата. 18+</p></section>`;
   }
+  const fcSigned=(r,verb)=>{const v=Math.round((r-1)*100);return verb+' '+(v===0?'на уровне лиги':(v>0?'+':'−')+Math.abs(v)+'% к среднему');};
   function renderForecast(id){
+    forecastStyles();
     const f=forecastFeed&&forecastFeed.forecasts.find(x=>x.eventId===id&&fcOk(x));
-    if(!f) return `<section class="wrap reading-match reading-forecast"><a class="back-link" href="/forecasts">← Все прогнозы</a>${fcNotice()||'<p class="demo-note">Прогноз на этот матч не найден.</p>'}</section>`;
-    const started=Date.parse(f.kickoff)<=Date.now(), m=(window.__INITIAL__?.matches||[]).find(x=>x.id===f.eventId);
-    return `<section class="wrap reading-match reading-forecast" data-forecast="${h(f.eventId)}"><a class="back-link" href="/forecasts">← Все прогнозы</a><div class="category-header"><p>Футбол · ${h(f.league)}</p><h1>${h(f.home)}<br>— ${h(f.away)}</h1><p>${h(fcTime(f.kickoff))}</p></div><h2>Вероятности исходов</h2>${fcStrip(f)}<p class="demo-note">Основное время: 90 минут и добавленное. Вероятнее всего по модели — ${fcWords[f.selection]} (${pctText(f.probabilities[f.selection])}). Это оценка модели, а не коэффициенты букмекеров и не обещание результата. 18+${started?' Матч уже начался: прогноз зафиксирован до начала и не меняется.':''}</p><h2>Почему так</h2>${f.reasons.map(r=>`<p class="market-explanation forecast-reason">${h(r)}</p>`).join('')}<p class="demo-note">Расчёт ${h(fcTime(f.issuedAt))} · учтены результаты до ${h(fcTime(f.inputUntil))} · модель ${h(f.modelVersion)} · ${h(f.source)}</p>${m?`<a class="editorial-link" href="/match/${encodeURIComponent(m.id)}">Страница матча ↗</a>`:''}<a class="editorial-link" href="/forecasts">Все прогнозы ↗</a></section>`;
+    if(!f) return `<section class="wrap reading-match reading-forecast fc-wrap"><a class="back-link" href="/forecasts">← Все прогнозы</a>${fcNotice()||'<p class="demo-note">Прогноз на этот матч не найден.</p>'}</section>`;
+    const d=f.details||{}, started=Date.parse(f.kickoff)<=Date.now(), m=(window.__INITIAL__?.matches||[]).find(x=>x.id===f.eventId), snapshot=window.TRIBUNA_FORECASTS_SNAPSHOT===true;
+    const blocks=[];
+    if(d.expectedGoals) blocks.push(['Ожидаемые голы',`<div class="fc-xg"><div><b>${d.expectedGoals.home.toFixed(2).replace('.',',')}</b><span>${h(f.home)}</span></div><div><b>${d.expectedGoals.away.toFixed(2).replace('.',',')}</b><span>${h(f.away)}</span></div></div><p class="fc-cap">Расчёт по забитым и пропущенным голам, не xG по ударам.</p>`]);
+    if(d.strength) blocks.push(['Сила команд относительно лиги',[[f.home+' дома',d.strength.home],[f.away+' в гостях',d.strength.away]].map(([n,s])=>`<div class="fc-row"><b>${h(n)}</b><ul class="fc-chips"><li class="${s.attack>=1.05?'good':s.attack<=.95?'bad':''}">${fcSigned(s.attack,'Забивает')}</li><li class="${s.defense<=.95?'good':s.defense>=1.05?'bad':''}">${fcSigned(s.defense,'Пропускает')}</li></ul></div>`).join('')]);
+    if(d.form&&(d.form.home.length||d.form.away.length)) blocks.push(['Последние матчи в чемпионате',[[f.home,d.form.home],[f.away,d.form.away]].map(([n,r])=>`<div class="fc-row"><b>${h(n)}</b><ul class="fc-form" aria-label="От старых к новым: ${h(r.join(', ')||'нет данных')}">${(r.length?r:['—']).map(x=>`<li class="${x==='В'?'w':x==='П'?'l':'d'}">${h(x)}</li>`).join('')}</ul></div>`).join('')+'<p class="fc-cap">В — победа, Н — ничья, П — поражение; слева направо от старых к новым.</p>']);
+    if(d.scores&&d.scores.length) blocks.push(['Самые вероятные счета',`<ul class="fc-scores">${d.scores.map(s=>`<li><b>${h(s.score.replace(':',' : '))}</b><span>${pctText(s.probability)}</span></li>`).join('')}</ul>`]);
+    blocks.push(['Что модель не учитывает','<p>Составы, травмы, мотивацию, погоду и коэффициенты букмекеров.</p>']);
+    const body=f.details?`<div class="fc-blocks">${blocks.map(([t,c],i)=>`<section class="fc-block"><p class="fc-kicker">${String(i+1).padStart(2,'0')} / ${h(t)}</p>${c}</section>`).join('')}</div>`:f.reasons.map(r=>`<p class="market-explanation forecast-reason">${h(r)}</p>`).join('');
+    return `<section class="wrap reading-match reading-forecast fc-wrap" data-forecast="${h(f.eventId)}"><a class="back-link" href="/forecasts">← Все прогнозы</a><p class="fc-kicker" style="margin-top:18px">Футбол · ${h(f.league)} · ${h(fcTime(f.kickoff))}</p><h1 class="fc-h1"><span>${h(f.home)}</span><span>— ${h(f.away)}</span></h1><div class="fc-main"><p class="fc-kicker">Прогноз модели · основное время</p>${fcPick(f)}${fcBar(f)}${started?'<p class="fc-note">Матч начался: прогноз зафиксирован до начала и не меняется.</p>':''}</div>${d.summary?`<p class="fc-short">${h(d.summary)}</p>`:''}${body}<p class="fc-foot">${snapshot?'Демо: снимок расчёта ':'Расчёт '}${h(fcTime(f.issuedAt))}${snapshot?', не обновляется':''}. Учтены результаты до ${h(fcTime(f.inputUntil))}${d.sample?`; ${d.sample.league} матчей лиги, из них ${d.sample.home} домашних у хозяев и ${d.sample.away} выездных у гостей`:''}. Модель ${h(f.modelVersion)} · ${h(f.source)}. Вероятность — оценка, а не обещание результата. 18+</p><div class="fc-links">${m?`<a class="editorial-link" href="/match/${encodeURIComponent(m.id)}">Страница матча ↗</a>`:''}<a class="editorial-link" href="/forecasts">Все прогнозы ↗</a></div></section>`;
   }
   function forecastTeaser(m){
     if(forecastState==='idle') loadForecasts();
@@ -166,7 +267,9 @@
     const key=v=>String(v||'').toLowerCase().replace(/ё/g,'е').replace(/[^a-zа-я0-9]/g,'');
     const day=f=>new Date(Date.parse(f.kickoff)+3*3600000).toISOString().slice(0,10);
     const f=forecastFeed&&(forecastFeed.forecasts.find(x=>x.eventId===m.id&&fcOk(x))||(m.sport==='Футбол'?forecastFeed.forecasts.find(x=>fcOk(x)&&key(x.home)===key(m.home)&&key(x.away)===key(m.away)&&day(x)===m.date):null));
-    return f?`<div class="match-forecast"><h2>Прогноз модели</h2>${fcStrip(f)}<p class="demo-note">Вероятности модели, не коэффициенты. <a href="/forecast/${encodeURIComponent(f.eventId)}">Почему так ↗</a></p></div>`:'';
+    if(!f) return '';
+    forecastStyles();
+    return `<div class="match-forecast fc-wrap"><h2>Прогноз модели</h2><div class="fc-card">${fcPick(f)}${fcBar(f)}${f.details?.summary?`<p class="fc-sum">${h(f.details.summary)}</p>`:''}<a class="fc-go" href="/forecast/${encodeURIComponent(f.eventId)}"><span>Почему так — подробный разбор</span><span aria-hidden="true">↗</span></a></div></div>`;
   }
   const originalRender=render;
   render = function() {
@@ -213,10 +316,12 @@
     const parts=routePath().split('/').filter(Boolean);
     if(parts[0]==='forecasts'||(parts[0]==='forecast'&&parts[1])) {
       loadForecasts();
+      document.body.classList.add('forecast-route');
       page.innerHTML=parts[0]==='forecasts'?renderForecasts():renderForecast(decodeURIComponent(parts[1]));
       document.title=(parts[0]==='forecasts'?'Прогнозы':'Прогноз матча')+' — Трибуна';closeMenu();setPageSchema(null);
       return;
     }
+    document.body.classList.remove('forecast-route');
     forecastBaseRender();
     if(parts[0]==='matches'&&!page.querySelector('.forecast-entry')) {
       const at=page.querySelector('.category-header')||page.querySelector('h1');
