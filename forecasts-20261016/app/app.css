@@ -291,6 +291,6 @@ a.ncard:hover { border-color: rgba(230,255,87,.5); }
 /* Прогнозы: карточка-ссылка из тех же элементов, что карточка матча; выбранный исход — акцентом. */
 a.mcard.fc-card { color: inherit; text-decoration: none; }
 .fc-probs { margin-top: 12px; }
-.fc-probs li.pick { border-color: var(--acid); color: var(--acid); }
+#f-body .fc-probs li.pick, #fc-body .fc-probs li.pick { border-color: var(--acid); color: var(--acid); }  /* выше site-style.css .pills li */
 .fc-group { color: var(--muted); font: 700 12px/1.3 Golos; letter-spacing: .08em; text-transform: uppercase; padding-top: 18px; }
 .fc-calib { margin-top: 12px; display: grid; gap: 6px; font-size: 13px; color: var(--muted); }
