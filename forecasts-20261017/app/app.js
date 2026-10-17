@@ -336,7 +336,8 @@
   function fcStamp(iso) { return day(mskDay(iso), true) + ', ' + mskTime(iso) + ' МСК'; }
   function findForecast(id) { return FC ? FC.forecasts.filter(function (f) { return f.eventId === id; })[0] : null; }
   function forecastTitle(id) { var f = findForecast(id); return f ? f.home + ' — ' + f.away : 'Прогноз матча'; }
-  var SHORT = { home: 'хозяева', draw: 'ничья', away: 'гости' }, OUT = { home: 'Победа хозяев', draw: 'Ничья', away: 'Победа гостей' };
+  // Исходы называются командами, как в приложении: «Победит Борнмут», «Ничья».
+  function side(f, k) { return k === 'home' ? f.home : k === 'away' ? f.away : 'Ничья'; }
   // Полоска трёх исходов: ширина — вероятность, главный исход — акцентом; под ней подписи с числами.
   function outcomeBar(f, big) {
     var wrap = el('div', 'fc-bar' + (big ? ' big' : ''));
@@ -345,14 +346,14 @@
     wrap.appendChild(track);
     var legend = el('ul', 'fc-legend'); legend.setAttribute('aria-label', 'Вероятности исходов');
     ['home', 'draw', 'away'].forEach(function (k) {
-      var li = el('li', k === f.selection ? 'on' : null); li.appendChild(el('span', null, LBL[k] + ' · ' + SHORT[k])); li.appendChild(el('b', null, pctf(f.probabilities[k]))); legend.appendChild(li);
+      var li = el('li', k === f.selection ? 'on' : null); li.appendChild(el('span', null, side(f, k))); li.appendChild(el('b', null, pctf(f.probabilities[k]))); legend.appendChild(li);
     });
     wrap.appendChild(legend); return wrap;
   }
   function mainPick(f) {
     var d = el('div', 'fc-pick'); d.appendChild(el('p', 'num', pctf(f.probabilities[f.selection])));
-    var t = el('div'); t.appendChild(el('b', null, OUT[f.selection]));
-    t.appendChild(el('span', null, f.selection === 'draw' ? 'самый вероятный исход' : 'самый вероятный исход · ' + (f.selection === 'home' ? f.home : f.away)));
+    var t = el('div'); t.appendChild(el('b', null, f.selection === 'draw' ? 'Ничья' : 'Победит ' + side(f, f.selection)));
+    t.appendChild(el('span', null, 'самый вероятный исход'));
     d.appendChild(t); return d;
   }
   // Итог из журнала: вписывается автоматически после матча (счёт за 90 минут); до этого — ничего не показываем.

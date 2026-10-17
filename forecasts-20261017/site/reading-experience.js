@@ -205,7 +205,8 @@
     document.head.appendChild(s);
   }
   const pctText=v=>`${Math.round(v*100)}%`;
-  const fcLabels={home:'П1',draw:'X',away:'П2'}, fcSides={home:'хозяева',draw:'ничья',away:'гости'}, fcOut={home:'Победа хозяев',draw:'Ничья',away:'Победа гостей'};
+  // Outcomes are named by the teams, as in the app («Победит Борнмут», «Ничья»), not «П1 · хозяева».
+  const fcSide=(f,k)=>k==='home'?f.home:k==='away'?f.away:'Ничья';
   const fcTime=iso=>new Date(iso).toLocaleString('ru-RU',{timeZone:'Europe/Moscow',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})+' МСК';
   const fcClock=iso=>new Date(iso).toLocaleTimeString('ru-RU',{timeZone:'Europe/Moscow',hour:'2-digit',minute:'2-digit'});
   const fcDay=iso=>new Date(iso).toLocaleDateString('ru-RU',{timeZone:'Europe/Moscow',day:'numeric',month:'long'});
@@ -214,11 +215,11 @@
   const fcNotice=()=>forecastState==='error'?'<p class="demo-note">Не удалось загрузить прогнозы. Обновите страницу позже.</p>':forecastState!=='ready'?'<p class="demo-note">Загружаем прогнозы…</p>':'';
   const fcPlural=(n,a,b,c)=>{const x=n%10,y=n%100;return x===1&&y!==11?a:x>=2&&x<=4&&(y<12||y>14)?b:c;};
   function fcBar(f){
-    return `<div class="fc-bar"><div class="fc-track" aria-hidden="true">${['home','draw','away'].map(k=>`<span${k===f.selection?' class="on"':''} style="width:${(f.probabilities[k]*100).toFixed(1)}%"></span>`).join('')}</div><ul class="fc-legend forecast-strip" aria-label="Вероятности исходов">${['home','draw','away'].map(k=>`<li${k===f.selection?' class="on" data-pick="1"':''}><span>${fcLabels[k]} · ${fcSides[k]}</span><b>${pctText(f.probabilities[k])}</b></li>`).join('')}</ul></div>`;
+    return `<div class="fc-bar"><div class="fc-track" aria-hidden="true">${['home','draw','away'].map(k=>`<span${k===f.selection?' class="on"':''} style="width:${(f.probabilities[k]*100).toFixed(1)}%"></span>`).join('')}</div><ul class="fc-legend forecast-strip" aria-label="Вероятности исходов">${['home','draw','away'].map(k=>`<li${k===f.selection?' class="on" data-pick="1"':''}><span>${h(fcSide(f,k))}</span><b>${pctText(f.probabilities[k])}</b></li>`).join('')}</ul></div>`;
   }
   function fcPick(f){
-    const who=f.selection==='draw'?'':' · '+(f.selection==='home'?f.home:f.away);
-    return `<div class="fc-pick"><span class="fc-num">${pctText(f.probabilities[f.selection])}</span><div><b>${fcOut[f.selection]}</b><small>самый вероятный исход${h(who)}</small></div></div>`;
+    const what=f.selection==='draw'?'Ничья':'Победит '+fcSide(f,f.selection);
+    return `<div class="fc-pick"><span class="fc-num">${pctText(f.probabilities[f.selection])}</span><div><b>${h(what)}</b><small>самый вероятный исход</small></div></div>`;
   }
   const fcNum=(v,lo,hi)=>typeof v==='number'&&isFinite(v)&&v>=lo&&v<=hi;
   // Outcome of a forecast from the journal (won/lost with the 90-minute score, or void); nothing for pending.
