@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200" role="img" aria-labelledby="title desc">
+<title id="title">Одиннадцать метров</title><desc id="desc">Условная схема футбольного поля: расстояние от одиннадцатиметровой отметки до середины линии ворот составляет 11 метров.</desc>
+<rect width="1200" height="1200" fill="#172d4b"/>
+<g fill="none" stroke="#e9e7db" stroke-width="4"><path d="M110 200H1090M290 200V620H910V200M435 200V350H765V200M490 200V135H710V200"/><path d="M405 620Q600 835 795 620"/></g>
+<g stroke="#e9e7db" stroke-width="1.5" opacity=".4"><path d="M517 135V199m27-64V199m28-64V199m28-64V199m28-64V199m28-64V199m28-64V199M490 156H710M490 177H710"/></g>
+<path d="M600 225V498" stroke="#f37735" stroke-width="3" stroke-dasharray="10 14"/>
+<circle cx="600" cy="525" r="12" fill="#f37735"/>
+<g fill="#e9e7db" font-family="Arial, sans-serif"><text x="647" y="430" font-size="46">11 м</text><text x="110" y="1010" font-size="36" letter-spacing="2">БЕРЛИН · 2006</text><text x="110" y="1075" font-size="24">Девять ударов одного финала</text></g>
+</svg>

@@ -1,0 +1,14 @@
+{
+  "name": "Трибуна.ру",
+  "short_name": "Трибуна",
+  "description": "Авторское медиа о спорте",
+  "lang": "ru",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#f6f5f0",
+  "theme_color": "#e9ff54",
+  "icons": [
+    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

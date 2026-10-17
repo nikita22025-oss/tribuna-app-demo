@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1200" viewBox="0 0 900 1200" role="img" aria-label="Условный маршрут марафона; 42,195 километра">
+<rect width="900" height="1200" fill="#244c78"/>
+<g fill="none" stroke="#eae7d8" stroke-width="4" opacity=".3"><path d="M-10 285H180Q250 285 250 365V525Q250 570 180 570H85Q20 570 20 650V895H550V1030H910M-10 335H130Q200 335 200 405V475Q200 520 130 520H40Q-25 520-25 640V945H500V1080H910M-10 235H230Q300 235 300 325V575Q300 620 230 620H135Q70 620 70 700V845H600V980H910"/></g>
+<path d="M36 310H155Q225 310 225 385V500Q225 546 155 546H65Q46 546 46 673V870H575V1005H795" fill="none" stroke="#e8f139" stroke-width="12" stroke-linecap="round"/>
+<circle cx="36" cy="310" r="13" fill="#e8f139"/><path d="M789 970V1040" stroke="#df3027" stroke-width="15"/>
+<text x="48" y="195" fill="#f3efdf" font-family="Arial,sans-serif" font-weight="900" font-size="166" letter-spacing="-12">42,195</text>
+<text x="354" y="491" fill="#f3efdf" font-family="Arial,sans-serif" font-size="33" letter-spacing="4">1908</text>
+<text x="354" y="539" fill="#f3efdf" font-family="Arial,sans-serif" font-size="33" letter-spacing="4">↓</text>
+<text x="354" y="586" fill="#f3efdf" font-family="Arial,sans-serif" font-size="33" letter-spacing="4">1921</text>
+<text x="55" y="1140" fill="#f3efdf" font-family="Arial,sans-serif" font-size="23" letter-spacing="5">МАРШРУТ / МЕРА / ПАМЯТЬ</text>
+</svg>

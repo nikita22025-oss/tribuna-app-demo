@@ -1,0 +1,2 @@
+/* Дополнение к теме для живого сайта под /v2/: логотип шапки — файл из согласованного макета. */
+.site-header .classic-wordmark:has(.g-logo-box) > svg { display: none !important; }

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1200" viewBox="0 0 900 1200" role="img" aria-label="Условная дуга над планкой и результат 2,24 метра">
+<rect width="900" height="1200" fill="#e8e2cf"/>
+<g fill="none" stroke="#c3bead" stroke-width="2"><path d="M40 320H860M40 370H860M40 420H860M40 470H860M40 520H860M40 570H860M40 620H860"/></g>
+<path d="M130 810V476M770 810V476M119 474H781" stroke="#1b201a" stroke-width="9" fill="none"/>
+<path d="M195 856C237 682 213 378 442 334C655 294 657 614 712 667" stroke="#df3027" stroke-width="18" fill="none" stroke-linecap="round"/>
+<path d="M668 656L715 676 728 625" fill="none" stroke="#df3027" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="62" y="250" font-family="Arial,sans-serif" font-weight="900" font-size="219" letter-spacing="-18" fill="#1b201a">2,24</text>
+<text x="70" y="1080" font-family="Arial,sans-serif" font-size="38" letter-spacing="7" fill="#1b201a">MEXICO / 1968</text>
+<path d="M68 1120Q350 1110 585 1119" fill="none" stroke="#df3027" stroke-width="7" stroke-linecap="round"/>
+</svg>
